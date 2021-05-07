@@ -1,17 +1,9 @@
-//Old ES5 code
-
-// const express = require('express')
-// const app = express()
-// const port = 3000
-
-//NEW ES6 code
 import express from 'express';
 const app = express()
 const port = 3000
 
-
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.status(200).send('Hello Welcome to the Cab-Booking API!')
 })
 
 app.listen(port, () => {
