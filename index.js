@@ -4,9 +4,20 @@ import graphqlHTTP from 'express-graphql';
 import { GraphQLSchema } from 'graphql';
 const app = express()
 const port = 3000
+import { connect } from '@database';
+import rTracer from 'cls-rtracer';
+
+import { QueryRoot } from '@gql/queries';
+import { MutationRoot } from '@gql/mutations';
+import { logger } from '@utils/logger';
+
+// connect to database
+connect();
 
 // create the graphQL schema
-const schema = new GraphQLSchema({ query: {}, mutation: {} });
+const schema = new GraphQLSchema({ query: QueryRoot, mutation: MutationRoot });
+
+app.use(rTracer.expressMiddleware());
 
 app.use(
     '/graphql',
