@@ -2,18 +2,19 @@ const fs = require('fs');
 const path = require('path');
 
 const prettierOptions = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '.prettierrc'), 'utf8'),
+  fs.readFileSync(path.resolve(__dirname, '.prettierrc'), 'utf8'),
 );
 
 module.exports = {
+    parser: 'babel-eslint',
+    extends: ['prettier-standard'],
+    plugins: ['prettier'],
     env: {
         jest: true,
         browser: true,
         node: true,
         es6: true
     },
-    extends: ['prettier-standard'],
-    plugins: ['prettier'],
     parserOptions: {
         ecmaVersion: 6,
         sourceType: 'module'
@@ -21,7 +22,6 @@ module.exports = {
     rules: {
         'prettier/prettier': ['error', prettierOptions],
         'arrow-body-style': [2, 'as-needed'],
-        "quotes": [2, "double"],
         'class-methods-use-this': 0,
         'import/imports-first': 0,
         'import/newline-after-import': 0,
@@ -39,5 +39,19 @@ module.exports = {
         'no-use-before-define': 0,
         'prefer-template': 2,
         'require-yield': 0
+    },
+    settings: {
+        'import/resolver': {
+            node: {
+                app: './app',
+                context: 'app',
+                resolve: {
+                    app: './app',
+                    paths: ['app'],
+                    modules: ['app', 'node_modules'],
+                    extensions: ['.js', '.json', '.coffee']
+                }
+            }
+        }
     }
 };

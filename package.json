@@ -11,7 +11,14 @@
     "start": "node dist/index.bundle.js",
     "webpack:build": "export ENVIRONMENT_NAME=local && rimraf dist && webpack --mode development --config webpack.config.js",
     "local": "yarn run webpack:build && yarn run start",
-    "lint": "eslint --fix . && echo 'Lint complete.'"
+    "lint:fix": "eslint --fix . && echo 'Lint complete.'",
+    "lint": "npm run lint:js",
+    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern server/bin",
+    "lint:eslint:fix": "eslint --ignore-path .gitignore --ignore-pattern server/bin --fix",
+    "lint:js": "npm run lint:eslint -- . ",
+    "lint:staged": "lint-staged",
+    "prettify": "prettier --write",
+    "precommit": "lint:staged"
   },
   "dependencies": {
     "@babel/cli": "^7.13.16",

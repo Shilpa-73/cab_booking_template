@@ -1,6 +1,8 @@
 import Sequelize from 'sequelize';
 import * as pg from 'pg';
 let client;
+
+let defaultOBJ={}
 export const getClient = () => {
     if (!client) {
         try {
