@@ -67,6 +67,7 @@ export function model(sequelize, DataTypes){
   const vehicles = sequelize.define('vehicles', getAttributes(sequelize, DataTypes), {
     tableName: 'vehicles',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

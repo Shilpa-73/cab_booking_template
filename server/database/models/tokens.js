@@ -51,6 +51,7 @@ export function model(sequelize, DataTypes){
   const tokens = sequelize.define('tokens', getAttributes(sequelize, DataTypes), {
     tableName: 'tokens',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

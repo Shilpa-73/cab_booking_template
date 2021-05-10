@@ -6,14 +6,19 @@ import db from '@database/models';
 const { nodeInterface } = getNode();
 export const customerFields = {
     id: { type: GraphQLNonNull(GraphQLID) },
-    name: { type: GraphQLString },
-    category: { type: GraphQLString },
-    amount: { type: GraphQLInt }
+    first_name: { type: GraphQLString },
+    last_name: { type: GraphQLString },
+    mobile_no: { type: GraphQLString },
+    email: { type: GraphQLString },
+    address: { type: GraphQLString },
+    city: { type: GraphQLString },
+    state: { type: GraphQLString },
+    country: { type: GraphQLString }
 };
 
 // Customer
 export const Customer = new GraphQLObjectType({
-    name: 'Product',
+    name: 'Customer',
     interfaces: [nodeInterface],
     fields: () => ({
         ...customerFields

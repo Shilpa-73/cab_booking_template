@@ -71,6 +71,7 @@ export function model(sequelize, DataTypes){
   const drivers = sequelize.define('drivers', getAttributes(sequelize, DataTypes), {
     tableName: 'drivers',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

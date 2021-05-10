@@ -43,6 +43,7 @@ export function model(sequelize, DataTypes){
   const vehicleSubCategories = sequelize.define('vehicle_sub_categories', getAttributes(sequelize, DataTypes), {
     tableName: 'vehicle_sub_categories',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

@@ -48,6 +48,7 @@ export function model(sequelize, DataTypes){
   const passport = sequelize.define('passport', getAttributes(sequelize, DataTypes), {
     tableName: 'passport',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

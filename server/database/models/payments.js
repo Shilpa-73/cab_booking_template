@@ -47,6 +47,7 @@ export function model(sequelize, DataTypes){
   const payments = sequelize.define('payments', getAttributes(sequelize, DataTypes), {
     tableName: 'payments',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

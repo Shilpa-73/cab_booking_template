@@ -62,6 +62,7 @@ export function model(sequelize, DataTypes){
   const customers = sequelize.define('customers', getAttributes(sequelize, DataTypes), {
     tableName: 'customers',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

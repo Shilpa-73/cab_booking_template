@@ -43,6 +43,7 @@ export function model(sequelize, DataTypes){
   const address = sequelize.define('address', getAttributes(sequelize, DataTypes), {
     tableName: 'address',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

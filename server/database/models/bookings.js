@@ -108,6 +108,7 @@ export function model(sequelize, DataTypes){
   const bookings = sequelize.define('bookings', getAttributes(sequelize, DataTypes), {
     tableName: 'bookings',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
       {

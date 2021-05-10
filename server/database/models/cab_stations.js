@@ -55,6 +55,7 @@ export function model(sequelize, DataTypes){
     tableName: 'cab_stations',
     paranoid: true,
     timestamps: true,
+    underscored:true,
     indexes: [
       {
         name: "address_pkey",

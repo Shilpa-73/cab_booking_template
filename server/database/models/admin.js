@@ -46,6 +46,7 @@ export function model(sequelize, DataTypes){
   const admin = sequelize.define('admin', getAttributes(sequelize, DataTypes), {
     tableName: 'admin',
     paranoid: true,
+    underscored:true,
     timestamps: true,
     indexes: [
     {

@@ -12,6 +12,7 @@ db.cabStations = require('@database/models/cab_stations').model(sequelize, Seque
 db.admin = require('@database/models/admin').model(sequelize, Sequelize.DataTypes);
 db.vehicleCategories = require('@database/models/vehicle_categories').model(sequelize, Sequelize.DataTypes);
 db.vehicleSubCategories = require('@database/models/vehicle_sub_categories').model(sequelize, Sequelize.DataTypes);
+db.vehicles = require('@database/models/vehicles').model(sequelize, Sequelize.DataTypes);
 
 db.customers = require('@database/models/customers').model(sequelize, Sequelize.DataTypes);
 db.drivers = require('@database/models/drivers').model(sequelize, Sequelize.DataTypes);
