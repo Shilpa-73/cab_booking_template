@@ -45,7 +45,7 @@ export const loginResponse = new GraphQLObjectType({
     })
 });
 
-export const authQueries = {
+export const loginMutation = {
     type: loginResponse,
     args: {
         ...loginUserArgs
@@ -75,8 +75,13 @@ export const authQueries = {
 
             //Todo token create logic is pending!
 
-            let token = await jwt.sign(existCustomer.email, process.env.TOKEN_SECRET,
-                { expiresIn: '3600000' }
+            let token = await jwt.sign(
+                {
+                    user_id: existCustomer.id,
+                    email: existCustomer.email
+                },
+                process.env.TOKEN_SECRET,
+                {expiresIn: 3600000}
             );
             //Do entry of this token into the database
             await tokens.create({

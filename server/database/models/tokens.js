@@ -24,8 +24,7 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false
     },
     logout_time: {
-      type: DataTypes.DATE,
-      allowNull: false
+      type: DataTypes.DATE
     },
     user_id: {
       type: DataTypes.INTEGER,

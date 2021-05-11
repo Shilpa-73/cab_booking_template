@@ -2,6 +2,14 @@ import { GraphQLInt, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 import upperFirst from 'lodash/upperFirst';
 import { deletedId, deleteUsingId, updateUsingId } from '@database/dbUtils';
 import { customerMutations } from '@gql/models/customers';
+import { loginMutation } from '@gql/customMutations/authLogin';
+import camelCase from "lodash/camelCase";
+import {signupMutations} from "./customMutations/signup";
+
+const CUSTOMS = {
+  login: loginMutation,
+  signup: signupMutations,
+};
 
 export const createResolvers = model => ({
   createResolver: (parent, args, context, resolveInfo) => model.create(args),
@@ -32,6 +40,13 @@ export const addMutations = () => {
         id: { type: GraphQLNonNull(GraphQLInt) }
       },
       resolve: createResolvers(DB_TABLES[table].model).deleteResolver
+    };
+  });
+
+  // adding mutations from CUSTOMS (those which have custom resolvers)
+  Object.keys(CUSTOMS).forEach(que => {
+    mutations[camelCase(que)] = {
+      ...CUSTOMS[que]
     };
   });
   return mutations;
