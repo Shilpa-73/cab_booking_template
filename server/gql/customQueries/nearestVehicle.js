@@ -37,6 +37,7 @@ export const nearestVehicleFields = {
         description    : 'This field state that the customer signup is done perfectly or not!'
     },
 
+
     data: {
         type : GraphQLList(vehicleResponse)
     }
