@@ -8,6 +8,11 @@ let unusedVar={
 
     newk:`djfghdj`
 }
+
+let funV = function () {
+    return 'demo'
+}
+
 //This is response fields of the query
 export const loginUserFields = {
     user_id: {
