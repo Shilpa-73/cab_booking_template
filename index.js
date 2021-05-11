@@ -11,6 +11,7 @@ import { QueryRoot } from '@gql/queries';
 import { MutationRoot } from '@gql/mutations';
 import { logger } from '@utils/logger';
 
+const dkjkjkg = {}
 // connect to database
 connect();
 
