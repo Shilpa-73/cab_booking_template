@@ -6,7 +6,8 @@ import moment from 'moment';
 let unusedVar={
     a:2,
 
-    newk:`djfghdj`
+    newk:`djfghdj`,
+    doubleQuoteEx:"jhjghjgd"
 }
 
 let funV = function () {
