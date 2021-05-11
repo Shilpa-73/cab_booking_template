@@ -3,6 +3,7 @@ import { createConnection } from 'graphql-sequelize';
 import { vehicleSubCategoryQueries } from './vehicleSubCategories';
 import { getNode } from '@gql/node';
 import db from '@database/models';
+import {vehicleQueries} from "./vehicles";
 
 const { nodeInterface } = getNode();
 export const VehicleCategoryFields = {
@@ -20,6 +21,11 @@ export const VehicleCategory = new GraphQLObjectType({
             ...vehicleSubCategoryQueries.list,
             resolve: (source, args, context, info) =>
                 vehicleSubCategoryQueries.list.resolve(source, args, { ...context, vehicleCategory: source.dataValues }, info)
+        },
+        vehicles:{
+            ...vehicleQueries.list,
+            resolve: (source, args, context, info) =>
+                vehicleQueries.list.resolve(source, args, { ...context, vehicleCategory: source.dataValues }, info)
         }
     })
 });
@@ -38,6 +44,16 @@ export const VehicleCategoryConnection = createConnection({
                 as:'vehicle_sub_categories',
                 where: {
                     id: context.vehicleSubCategory.id
+                }
+            });
+        }
+
+        if (context?.vehicle?.id) {
+            findOptions.include.push({
+                model: db.vehicles,
+                as:'vehicles',
+                where: {
+                    id: context.vehicle.id
                 }
             });
         }
