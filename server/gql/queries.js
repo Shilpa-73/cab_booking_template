@@ -4,11 +4,16 @@ import pluralize from 'pluralize';
 import { defaultArgs, resolver } from 'graphql-sequelize';
 import { getNode } from '@gql/node';
 import { Customer, customerQueries } from '@gql/models/customers';
+import { authQueries } from '@gql/customQueries/authLogin';
 
 const { nodeField, nodeTypeMapper } = getNode();
 
 const DB_TABLES = {
   customer: customerQueries
+};
+
+const CUSTOMS = {
+  login: authQueries
 };
 
 export const addQueries = () => {
@@ -25,6 +30,13 @@ export const addQueries = () => {
     };
     query[pluralize(camelCase(table))] = {
       ...DB_TABLES[table].list
+    };
+  });
+
+  // adding Queries from CUSTOMS (those which have custom resolvers)
+  Object.keys(CUSTOMS).forEach(que => {
+    query[camelCase(que)] = {
+      ...CUSTOMS[que]
     };
   });
   return query;

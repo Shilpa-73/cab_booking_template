@@ -39,6 +39,9 @@
     "graphql-relay": "^0.6.0",
     "graphql-sequelize": "^9.4.3",
     "http": "^0.0.1-security",
+    "husky": "^6.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
     "net": "^1.0.2",
     "path": "^0.12.7",
     "pg": "^8.6.0",
@@ -70,5 +73,20 @@
     "shelljs": "^0.8.4",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:eslint:fix",
+      "git add --force"
+    ],
+    "*.json": [
+      "prettier --write",
+      "git add --force"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
