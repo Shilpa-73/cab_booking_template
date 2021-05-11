@@ -77,7 +77,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "yarn run lint:eslint:fix",
+      "npm run lint:eslint:fix",
       "git add --force"
     ],
     "*.json": [
