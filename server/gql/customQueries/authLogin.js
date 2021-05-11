@@ -5,6 +5,7 @@ import moment from 'moment';
 
 let unusedVar={
     a:2,
+
     newk:`djfghdj`
 }
 //This is response fields of the query
