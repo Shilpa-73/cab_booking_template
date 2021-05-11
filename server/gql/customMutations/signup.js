@@ -1,6 +1,6 @@
 import {GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean} from 'graphql';
 import db from '@database/models';
-import {generatePassword,comparePassword} from '@database/bcrypt'
+import {generatePassword} from '@database/bcrypt'
 
 //This is response fields of the signup response
 export const signupUserFields = {

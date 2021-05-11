@@ -2,6 +2,7 @@ import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString } from 'gr
 import db from '@database/models';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
+import {comparePassword} from '@database/bcrypt'
 
 let unusedVar={
     a:2,
@@ -70,8 +71,8 @@ export const loginMutation = {
                 throw new Error(`This ${email} account provider not exist!`)
 
             //Compare the password
-            if(passportData.password!==password)
-                throw new Error(`Password mismacth!`)
+            let matchPassword = await comparePassword(password, passportData.password)
+            if(!matchPassword) throw new Error(`Password Mismatch!`)
 
             //Todo token create logic is pending!
 

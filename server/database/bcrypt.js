@@ -13,9 +13,9 @@ export const generatePassword = async(password)=>{
     })
 }
 
-export const comparePassword = async(hash)=>{
+export const comparePassword = async(password,hash)=>{
     return new Promise((rs,rj)=>{
-        bcrypt.compare("B4c0/\/", hash, function(err, res) {
+        bcrypt.compare(password, hash, function(err, res) {
             if(err) return rj(err)
             // res === true
             rs(res)
