@@ -17,6 +17,6 @@ CREATE TABLE drivers (
 );
 
 CREATE UNIQUE INDEX drivers_mobile_no
-ON customers(mobile_no);
+ON drivers(mobile_no);
 CREATE INDEX drivers_email ON drivers USING btree (email);
 
