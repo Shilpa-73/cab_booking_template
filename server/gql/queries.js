@@ -8,6 +8,7 @@ import { Driver, driverQueries } from '@gql/models/drivers';
 import { VehicleCategory, vehicleCategoryQueries } from '@gql/models/vehicleCategories';
 import { VehicleSubCategory, vehicleSubCategoryQueries } from '@gql/models/vehicleSubCategories';
 import { bookingQueries } from '@gql/models/bookings';
+import { nearestVehicleQueries } from '@gql/customQueries/nearestVehicle';
 
 const { nodeField, nodeTypeMapper } = getNode();
 
@@ -20,7 +21,7 @@ const DB_TABLES = {
 };
 
 const CUSTOMS = {
-
+   nearestVehicle: nearestVehicleQueries
 };
 
 

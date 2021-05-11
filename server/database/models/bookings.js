@@ -40,7 +40,7 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false
     },
     status: {
-      type: DataTypes.ENUM("REQUESTED","CONFIRMED","NOT_AVAILABLE"),
+      type: DataTypes.ENUM("REQUESTED","CAB_ASSIGNED","CONFIRMED","NOT_AVAILABLE"),
       allowNull: false,
       defaultValue: "REQUESTED"
     },
