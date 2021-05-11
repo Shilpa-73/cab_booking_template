@@ -12,6 +12,9 @@ import { MutationRoot } from '@gql/mutations';
 import { logger } from '@utils/logger';
 
 const dkjkjkg = {}
+let unusedObj = {
+    a: 736473647,
+}
 // connect to database
 connect();
 
