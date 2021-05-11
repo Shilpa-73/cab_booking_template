@@ -4,16 +4,23 @@ import pluralize from 'pluralize';
 import { defaultArgs, resolver } from 'graphql-sequelize';
 import { getNode } from '@gql/node';
 import { Customer, customerQueries } from '@gql/models/customers';
+import { VehicleCategory, vehicleCategoryQueries } from '@gql/models/vehicleCategories';
+import { VehicleSubCategory, vehicleSubCategoryQueries } from '@gql/models/vehicleSubCategories';
 
 const { nodeField, nodeTypeMapper } = getNode();
 
 const DB_TABLES = {
-  customer: customerQueries
+  customer: customerQueries,
+  vehicleCategory: vehicleCategoryQueries,
+  vehicleSubCategory: vehicleSubCategoryQueries,
 };
 
 const CUSTOMS = {
 
 };
+
+
+console.log(`VehicleCategoryQueries is `, vehicleCategoryQueries.query)
 
 export const addQueries = () => {
   const query = {};
