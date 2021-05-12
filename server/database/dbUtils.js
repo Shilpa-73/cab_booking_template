@@ -80,6 +80,8 @@ export const sequelizedWhere = (currentWhere = {}, where = {}) => {
   return { ...currentWhere, ...where };
 };
 
+let unUsedVariable = {}
+
 export const removeDBReferenceKeyFromResponse = dbResponse=>{
   let convertedObject = {}
   for (const [key, value] of Object.entries(dbResponse)) {
