@@ -4,6 +4,8 @@ import { graphqlHTTP } from 'express-graphql';
 import { GraphQLSchema } from 'graphql';
 import { connect } from '@database';
 import rTracer from 'cls-rtracer';
+import jwt from 'express-jwt';
+import bodyParser from 'body-parser'
 
 import { QueryRoot } from '@gql/queries';
 import { MutationRoot } from '@gql/mutations';
@@ -23,14 +25,20 @@ app.use(rTracer.expressMiddleware());
 
 app.use(
   '/graphql',
-  graphqlHTTP({
-    schema: schema,
-    graphiql: true,
-    customFormatErrorFn: (e) => {
-      logger().info({ e });
-      return e;
-    }
-  })
+    bodyParser.json(),
+    jwt({
+        secret: process.env.TOKEN_SECRET,
+        credentialsRequired: false,
+        algorithms: ['RS256']
+    }),
+  graphqlHTTP((req)=>({
+      schema: schema,
+      graphiql: true,
+      customFormatErrorFn: (e) => {
+          logger().info({ e });
+          return e;
+      }
+  }))
 );
 
 app.get('/', (req, res) => {

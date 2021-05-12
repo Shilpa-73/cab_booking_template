@@ -1,14 +1,15 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString } from 'graphql';
+import {GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString} from 'graphql';
 import db from '@database/models';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import {comparePassword} from '@database/bcrypt'
 
-let unusedVar={
-    a:2,
+let unusedVar = {
+    a: 2,
 
-    newk:`djfghdj`,
-    doubleQuoteEx:"jhjghjgd"
+
+    newk: `djfghdj`,
+    doubleQuoteEx: "jhjghjgd"
 }
 
 let funV = function () {
@@ -51,12 +52,12 @@ export const loginMutation = {
     args: {
         ...loginUserArgs
     },
-    async resolve(source, { email, password }, context, info) {
+    async resolve(source, {email, password}, context, info) {
         try {
-            let { customers, passport, tokens }= db
+            let {customers, passport, tokens} = db
 
-            let existCustomer = await customers.findOne({where:{email:email.toLowerCase()}, raw:true})
-            if(!existCustomer) throw new Error(`This ${email} account does not exist!`)
+            let existCustomer = await customers.findOne({where: {email: email.toLowerCase()}, raw: true})
+            if (!existCustomer) throw new Error(`This ${email} account does not exist!`)
 
             //If customer is present check the password is matching or not!
             let passportData = await passport.findOne({
@@ -67,12 +68,12 @@ export const loginMutation = {
                 },
                 raw: true
             })
-            if(!passportData)
+            if (!passportData)
                 throw new Error(`This ${email} account provider not exist!`)
 
             //Compare the password
             let matchPassword = await comparePassword(password, passportData.password)
-            if(!matchPassword) throw new Error(`Password Mismatch!`)
+            if (!matchPassword) throw new Error(`Password Mismatch!`)
 
             //Todo token create logic is pending!
 
@@ -86,17 +87,17 @@ export const loginMutation = {
             );
             //Do entry of this token into the database
             await tokens.create({
-                type:'CUSTOMER',
+                type: 'CUSTOMER',
                 token,
-                login_time:moment(),
-                user_id:existCustomer.id,
-                token_expiry: moment().add(3600,'seconds')
+                login_time: moment(),
+                user_id: existCustomer.id,
+                token_expiry: moment().add(3600, 'seconds')
             })
 
-            return { token, user_id: existCustomer.id };
+            return {token, user_id: existCustomer.id};
         } catch (e) {
             throw Error(`Internal Error: ${e}`);
         }
     },
-    description: 'Get presigned AWS S3 URI which can be used to upload data to S3'
+    description: 'Login mutation for customer!'
 };
