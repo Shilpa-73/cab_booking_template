@@ -40,38 +40,35 @@ export const deletedId = new GraphQLObjectType({
   fields: () => ({ id: { type: GraphQLNonNull(GraphQLInt) } })
 });
 
-export const findOneById = async(model,args)=>{
-  try{
-    let data = await model.findOne({where:{id:args.id}, raw:true})
+export const findOneById = async (model, args) => {
+  try {
+    const data = await model.findOne({ where: { id: args.id }, raw: true });
     return data;
+  } catch (e) {
+    throw new Error(e.message);
   }
-  catch (e){
-    throw new Error(e.message)
-  }
-}
+};
 
-export const findOneByCriteria = async(model,args)=>{
-  try{
-    let data = await model.findOne({where:{...args}, raw:true})
+export const findOneByCriteria = async (model, args) => {
+  try {
+    const data = await model.findOne({ where: { ...args }, raw: true });
     return data;
+  } catch (e) {
+    throw new Error(e.message);
   }
-  catch (e){
-    throw new Error(e.message)
-  }
-}
+};
 
-export const insertRecord = async(model,args, returning=true)=>{
-  try{
-    let data = await model.create({...args}).then(d=>d.toJSON())
+export const insertRecord = async (model, args, returning = true) => {
+  try {
+    const data = await model.create({ ...args }).then((d) => d.toJSON());
     return data;
+  } catch (e) {
+    throw new Error(e.message);
   }
-  catch (e){
-    throw new Error(e.message)
-  }
-}
+};
 
 export const sequelizedWhere = (currentWhere = {}, where = {}) => {
-  where = deepMapKeys(where, k => {
+  where = deepMapKeys(where, (k) => {
     if (Op[k]) {
       return Op[k];
     }
@@ -80,44 +77,38 @@ export const sequelizedWhere = (currentWhere = {}, where = {}) => {
   return { ...currentWhere, ...where };
 };
 
-let unUsedVariable = {
-
-}
-
-export const removeDBReferenceKeyFromResponse = dbResponse=>{
-  let convertedObject = {}
+export const removeDBReferenceKeyFromResponse = (dbResponse) => {
+  let convertedObject = {};
   for (const [key, value] of Object.entries(dbResponse)) {
-    if(typeof value==='object' && isObject(value)){
-      convertedObject = Object.assign({}, convertedObject,
-          removeDBReferenceKeyFromResponse(value)
-      )
-    }
-    else{
-      let allKeys = key.split('.')
-      convertedObject[allKeys[allKeys.length-1]] = value
+    if (typeof value === 'object' && isObject(value)) {
+      convertedObject = Object.assign({}, convertedObject, removeDBReferenceKeyFromResponse(value));
+    } else {
+      const allKeys = key.split('.');
+      convertedObject[allKeys[allKeys.length - 1]] = value;
     }
   }
-  return convertedObject
-}
+  return convertedObject;
+};
 
-export const convertDbResponseToRawResponse = dbResponse => {
+export const convertDbResponseToRawResponse = (dbResponse) => {
   if (dbResponse) {
-    return removeDBReferenceKeyFromResponse(dbResponse.get({
-      plain: true,
-      nest:false,
-      raw: true
-    }));
+    return removeDBReferenceKeyFromResponse(
+      dbResponse.get({
+        plain: true,
+        nest: false,
+        raw: true
+      })
+    );
   }
   return null;
 };
-export const transformDbArrayResponseToRawResponse = arr => {
+export const transformDbArrayResponseToRawResponse = (arr) => {
   if (!isArray(arr)) {
     throw new Error('The required type should be an object(array)');
   } else {
-    return arr.map(resource => mapKeysDeep(convertDbResponseToRawResponse(resource), keys => camelCase(keys)));
+    return arr.map((resource) => mapKeysDeep(convertDbResponseToRawResponse(resource), (keys) => camelCase(keys)));
   }
 };
 
-export const mapKeysToCamelCase=arr=> arr.map(resource =>
-    mapKeysDeep(removeDBReferenceKeyFromResponse(resource), keys => camelCase(keys))
-)
+export const mapKeysToCamelCase = (arr) =>
+  arr.map((resource) => mapKeysDeep(removeDBReferenceKeyFromResponse(resource), (keys) => camelCase(keys)));

@@ -18,7 +18,8 @@
     "lint:js": "npm run lint:eslint -- . ",
     "lint:staged": "lint-staged",
     "prettify": "prettier --write",
-    "precommit": "lint:staged"
+    "precommit": "lint:staged",
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "@babel/cli": "^7.13.16",
