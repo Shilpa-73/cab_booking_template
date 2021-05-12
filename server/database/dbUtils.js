@@ -114,8 +114,6 @@ export const transformDbArrayResponseToRawResponse = arr => {
   }
 };
 
-
-
 export const mapKeysToCamelCase=arr=> arr.map(resource =>
     mapKeysDeep(removeDBReferenceKeyFromResponse(resource), keys => camelCase(keys))
 )
