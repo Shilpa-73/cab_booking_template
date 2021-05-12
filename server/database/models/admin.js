@@ -6,15 +6,18 @@ export  function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    first_name: {
+    firstName: {
+      field:'first_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    last_name: {
+    lastName: {
+      field:'last_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    cab_station_id: {
+    cabStationId: {
+      field:'cab_station_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -26,16 +29,19 @@ export  function getAttributes(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

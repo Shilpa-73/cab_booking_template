@@ -6,36 +6,44 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    booking_type: {
+    bookingType: {
+      field:'booking_type',
       type: DataTypes.ENUM("DAILY_RIDE","OUTSTATION","RENTAL"),
       allowNull: false,
       defaultValue: "DAILY_RIDE"
     },
-    source_address: {
+    sourceAddress: {
+      field:'source_address',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    destination_address: {
+    destinationAddress: {
+      field:'destination_address',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    pickup_address: {
+    pickupAddress: {
+      field:'pickup_address',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    pickup_lat: {
+    pickupLat: {
+      field:'pickup_lat',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    pickup_long: {
+    pickupLong: {
+      field:'pickup_long',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    destination_lat: {
+    destinationLat: {
+      field:'destination_lat',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    destination_long: {
+    destinationLong: {
+      field:'destination_long',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
@@ -44,7 +52,8 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: "REQUESTED"
     },
-    customer_id: {
+    customerId: {
+      field:'customer_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -52,7 +61,8 @@ export function getAttributes(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    driver_id: {
+    driverId: {
+      field:'driver_id',
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
@@ -60,7 +70,8 @@ export function getAttributes(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    confirmed_by: {
+    confirmedBy: {
+      field:'confirmed_by',
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
@@ -68,7 +79,8 @@ export function getAttributes(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    vehicle_id: {
+    vehicleId: {
+      field:'vehicle_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -80,24 +92,29 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    start_time: {
+    startTime: {
+      field:'start_time',
       type: DataTypes.TIME,
       allowNull: true
     },
-    end_time: {
+    endTime: {
+      field:'end_time',
       type: DataTypes.TIME,
       allowNull: true
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

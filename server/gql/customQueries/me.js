@@ -15,10 +15,10 @@ let userFields = new GraphQLObjectType({
         id:{
             type: GraphQLNonNull(GraphQLInt)
         },
-        first_name:{
+        firstName:{
             type: GraphQLNonNull(GraphQLString)
         },
-        last_name:{
+        lastName:{
             type: GraphQLNonNull(GraphQLString)
         },
     })
@@ -49,8 +49,10 @@ export const isLoggedinQuery = {
         try {
             let { Customers } = db
 
+            console.log(`context user data is here!`, user)
+
             // make sure user is logged in
-            if (!Customers) {
+            if (!user) {
                 throw new Error('You are not authenticated!')
             }
 

@@ -11,7 +11,8 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: "DRIVER"
     },
-    item_id: {
+    itemId: {
+      field:'item_id',
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -23,16 +24,19 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

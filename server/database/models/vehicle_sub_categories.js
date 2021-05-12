@@ -10,7 +10,8 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    vehicle_category_id: {
+    vehicleCategoryId: {
+      field:'vehicle_category_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -23,16 +24,19 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: true
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

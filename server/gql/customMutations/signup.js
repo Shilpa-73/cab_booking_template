@@ -1,6 +1,7 @@
 import {GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean} from 'graphql';
 import db from '@database/models';
 import {generatePassword} from '@database/bcrypt'
+import {findOneByCriteria, insertRecord} from "../../database/dbUtils";
 
 //This is response fields of the signup response
 export const signupUserFields = {
@@ -8,7 +9,7 @@ export const signupUserFields = {
         type: GraphQLNonNull(GraphQLBoolean),
         description: 'This field state that the customer signup is done perfectly or not!'
     },
-    user_id: {
+    userId: {
         type: GraphQLNonNull(GraphQLInt),
         description: 'The user_id that is created after signup!'
     },
@@ -20,15 +21,15 @@ export const signupUserFields = {
 
 //This is a query argument that will passed from the graphiql/front-end
 export const signupUserArgs = {
-    first_name:{
+    firstName:{
         type: GraphQLNonNull(GraphQLString),
         description: 'first name of the customer!'
     },
-    last_name:{
+    lastName:{
         type: GraphQLNonNull(GraphQLString),
         description: 'Last name of customer!'
     },
-    mobile_no:{
+    mobileNo:{
         type: GraphQLNonNull(GraphQLString),
         description: 'mobile no of customer!'
     },
@@ -70,39 +71,38 @@ export const signupMutations = {
     args: {
         ...signupUserArgs
     },
-    async resolve(source, { first_name, last_name,email, password, mobile_no, ...rest }, context, info) {
+    async resolve(source, { firstName, lastName,email, password, mobileNo, ...rest }, context, info) {
         try {
-            let { customers, passport }= db
 
-            let existCustomer = await customers.findOne({where:{mobile_no}, raw:true})
+            //Check if customer is already registered with this mobile no!
+            let existCustomer = await findOneByCriteria(db.customers,{mobileNo})
             if(existCustomer)
-                throw new Error(`This ${mobile_no} is already registered, 
+                throw new Error(`This ${mobileNo} is already registered, 
                 Please try with another mobile number!`)
 
+            //Create bcrypt password
             let generatedPassword = await generatePassword(password)
 
-            let customer = await customers.create({
-                first_name,
-                last_name,
+            //Create customer entry to customer table!
+            let customer = await insertRecord(db.customers,{
+                firstName,
+                lastName,
                 email,
-                mobile_no,
+                mobileNo,
                 ...rest
-            }).then(data=>data.toJSON())
-
-
-            console.log(`customer details is here!`, customer)
+            })
 
             //Create password
-            await passport.create({
-                user_type :'CUSTOMER',
-                provider_type:'LOCAL',
+            await insertRecord(db.passport,{
+                userType :'CUSTOMER',
+                providerType:'LOCAL',
                 password:generatedPassword,
-                user_id:customer.id
+                userId:customer.id
             })
 
             return {
                 flag: true,
-                user_id: customer.id,
+                userId: customer.id,
                 message : `Your account is created. Please login to continue!`
             };
         } catch (e) {

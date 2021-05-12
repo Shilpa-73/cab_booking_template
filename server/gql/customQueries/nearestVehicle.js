@@ -8,23 +8,24 @@ import {
     GraphQLFloat
 } from 'graphql';
 import db from '@database/models';
+import { getNearestAvailableCabs } from '@daos/cabs';
 
- const vehicleResponse = new GraphQLObjectType({
+const vehicleResponse = new GraphQLObjectType({
     name: 'vehicleResponse',
     fields: () => ({
         id:{
             type: GraphQLNonNull(GraphQLInt)
         },
-        vehicle_number:{
+        vehicleNumber:{
             type: GraphQLNonNull(GraphQLString)
         },
         category:{
             type: GraphQLNonNull(GraphQLString)
         },
-        sub_category:{
+        subCategory:{
             type: GraphQLString
         },
-        disdiff:{
+        distanceDiff:{
             type: GraphQLNonNull(GraphQLFloat)
         },
     })
@@ -36,8 +37,6 @@ export const nearestVehicleFields = {
         type: GraphQLNonNull(GraphQLBoolean),
         description    : 'This field state that the customer signup is done perfectly or not!'
     },
-
-
     data: {
         type : GraphQLList(vehicleResponse)
     }
@@ -69,39 +68,7 @@ export const nearestVehicleQueries = {
     },
     async resolve(source, { lat, long }, context, info) {
         try {
-            let { sequelize } = db
-            const { QueryTypes } = sequelize
-
-            let distanceQuery = `
-               (
-                               select *
-                               from distance(
-                                       ${lat}, ${long},
-                                       addr.lat, addr.long
-                                   )
-                           )       as disDiff
-            `
-            let sqlQuery = `
-                with distanceDiff as (
-                    select vh.*,
-                           vc.name as category,
-                           vs.name as sub_category,
-                           ${distanceQuery}
-                    from address addr
-                    inner join vehicles vh on vh.id = addr.item_id
-                    inner join vehicle_categories vc on vc.id = vh.vehicle_category_id
-                    inner join vehicle_sub_categories vs on vs.id = vh.vehicle_sub_category_id
-                    where addr.type = 'VEHICLE'
-                    order by disDiff ASC
-                    limit 5
-                    )
-                select *
-                from distanceDiff;
-            `
-
-            let allNearestVehicles = await sequelize.query(
-                sqlQuery, { type: QueryTypes.SELECT }
-            );
+            let allNearestVehicles = await getNearestAvailableCabs({lat,long})
 
             return {
                 flag:true,

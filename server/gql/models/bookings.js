@@ -9,13 +9,13 @@ import db from '@database/models';
 const { nodeInterface } = getNode();
 export const BookingFields = {
     id: { type: GraphQLNonNull(GraphQLID) },
-    source_address: { type: GraphQLString },
-    destination_address: { type: GraphQLString },
-    pickup_address: { type: GraphQLString },
+    sourceAddress: { type: GraphQLString , sqlColumn: 'source_address' },
+    destinationAddress: { type: GraphQLString , sqlColumn: 'destination_address'},
+    pickupAddress: { type: GraphQLString, sqlColumn: 'pickup_address' },
     status: { type: GraphQLString },
-    vehicle_id:{type : GraphQLInt},
-    start_time:{type : GraphQLString},
-    end_time:{type : GraphQLString},
+    vehicleId:{type : GraphQLInt, sqlColumn: 'vehicle_id'},
+    startTime:{type : GraphQLString, sqlColumn: 'start_time'},
+    endTime:{type : GraphQLString, sqlColumn: 'end_time'},
 };
 
 // Booking

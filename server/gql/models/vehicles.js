@@ -9,11 +9,11 @@ import {bookingQueries} from "./bookings";
 const { nodeInterface } = getNode();
 export const vehicleFields = {
     id: { type: GraphQLNonNull(GraphQLID) },
-    vehicle_number: { type: GraphQLString },
+    vehicleNumber: { type: GraphQLString, sqlColumn: 'vehicle_number' },
     amount: { type: GraphQLInt },
-    model_no: { type: GraphQLString },
-    brand_name: { type: GraphQLString },
-    manufacturing_year: { type: GraphQLString }
+    modelNo: { type: GraphQLString, sqlColumn: 'model_no' },
+    brandName: { type: GraphQLString , sqlColumn: 'brand_name'},
+    manufacturingYear: { type: GraphQLString, sqlColumn: 'manufacturing_year' }
 };
 
 // Vehicle

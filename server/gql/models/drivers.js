@@ -7,9 +7,9 @@ import {bookingQueries} from "./bookings";
 const { nodeInterface } = getNode();
 export const driverFields = {
     id: { type: GraphQLNonNull(GraphQLID) },
-    first_name: { type: GraphQLString },
-    last_name: { type: GraphQLString },
-    mobile_no: { type: GraphQLString },
+    firstName: { type: GraphQLNonNull(GraphQLString), sqlColumn: 'first_name' },
+    lastName: { type: GraphQLNonNull(GraphQLString), sqlColumn: 'last_name' },
+    mobileNo: { type: GraphQLNonNull(GraphQLString), sqlColumn: 'mobile_no' },
     email: { type: GraphQLString },
     driving_license_number: { type: GraphQLString },
     address: { type: GraphQLString },

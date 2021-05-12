@@ -122,6 +122,7 @@ module.exports = {
             '@server': path.resolve(__dirname, './server'),
             '@utils': path.resolve(__dirname, './server/utils'),
             '@database': path.resolve(__dirname, './server/database'),
+            '@daos': path.resolve(__dirname, './server/daos'),
             '@gql': path.resolve(__dirname, './server/gql'),
             '@config': path.resolve(__dirname, 'config')
         },

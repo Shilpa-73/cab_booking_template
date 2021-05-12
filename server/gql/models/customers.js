@@ -7,9 +7,9 @@ import {bookingQueries} from "./bookings";
 const { nodeInterface } = getNode();
 export const customerFields = {
     id: { type: GraphQLNonNull(GraphQLID) },
-    first_name: { type: GraphQLString },
-    last_name: { type: GraphQLString },
-    mobile_no: { type: GraphQLString },
+    firstName: { type: GraphQLNonNull(GraphQLString), sqlColumn: 'first_name' },
+    lastName: { type: GraphQLNonNull(GraphQLString), sqlColumn: 'last_name' },
+    mobileNo: { type: GraphQLNonNull(GraphQLString), sqlColumn: 'mobile_no' },
     email: { type: GraphQLString },
     address: { type: GraphQLString },
     city: { type: GraphQLString },
@@ -38,11 +38,6 @@ export const CustomerConnection = createConnection({
     target: db.customers,
     before: (findOptions, args, context) => {
         findOptions.include = findOptions.include || [];
-
-        console.log(` context?.booking? `, context?.booking)
-        console.log(` context?.Booking? `, context?.Booking)
-        console.log(` context?.Booking? `, context?.Bookings)
-        console.log(` context?.Booking? `, context?.bookings)
 
         if (context?.booking?.id) {
             findOptions.include.push({

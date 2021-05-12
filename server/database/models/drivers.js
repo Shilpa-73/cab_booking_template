@@ -6,15 +6,18 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    first_name: {
+    firstName: {
+      field:'first_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    last_name: {
+    lastName: {
+      field:'last_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    mobile_no: {
+    mobileNo: {
+      field:'mobile_no',
       type: DataTypes.STRING(20),
       allowNull: false
     },
@@ -22,7 +25,8 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    birth_date: {
+    birthDate: {
+      field:'birth_date',
       type: DataTypes.DATE,
       allowNull: true
     },
@@ -42,7 +46,8 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    driving_license_number: {
+    drivingLicenseNumber: {
+      field:'driving_license_number',
       type: DataTypes.TEXT,
       allowNull: false
     },
@@ -51,16 +56,19 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: true
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

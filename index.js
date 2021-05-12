@@ -34,6 +34,7 @@ app.use(
   graphqlHTTP((req)=>({
       schema: schema,
       graphiql: true,
+      context:{user:req.user},
       customFormatErrorFn: (e) => {
           logger().info({ e });
           return e;

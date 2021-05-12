@@ -6,7 +6,8 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    booking_id: {
+    bookingId: {
+      field:'booking_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -14,29 +15,35 @@ export function getAttributes(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    payment_mode: {
+    paymentMode: {
+      field:'payment_mode',
       type: DataTypes.ENUM("CASH","CREDIT_CARD","DEBIT_CARD"),
       allowNull: false,
       defaultValue: "CASH"
     },
-    payment_meta: {
+    paymentMeta: {
+      field:'payment_meta',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    payable_amount: {
+    payableAmount: {
+      field:'payable_amount',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

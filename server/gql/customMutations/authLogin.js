@@ -3,22 +3,11 @@ import db from '@database/models';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import {comparePassword} from '@database/bcrypt'
-
-let unusedVar = {
-    a: 2,
-
-
-    newk: `djfghdj`,
-    doubleQuoteEx: "jhjghjgd"
-}
-
-let funV = function () {
-    return 'demo'
-}
+import {findOneById, findOneByCriteria, insertRecord} from '@database/dbUtils'
 
 //This is response fields of the query
 export const loginUserFields = {
-    user_id: {
+    userId: {
         type: GraphQLNonNull(GraphQLInt),
         description: 'The user_id that is related to the email entered for the login in Database!'
     },
@@ -54,19 +43,16 @@ export const loginMutation = {
     },
     async resolve(source, {email, password}, context, info) {
         try {
-            let {customers, passport, tokens} = db
 
-            let existCustomer = await customers.findOne({where: {email: email.toLowerCase()}, raw: true})
+            //Check given email customer is exist or not!
+            let existCustomer = await findOneByCriteria(db.customers,{email: email.toLowerCase()})
             if (!existCustomer) throw new Error(`This ${email} account does not exist!`)
 
             //If customer is present check the password is matching or not!
-            let passportData = await passport.findOne({
-                where: {
-                    user_id: existCustomer.id,
-                    user_type: 'CUSTOMER',
-                    provider_type: 'LOCAL'
-                },
-                raw: true
+            let passportData = await findOneByCriteria(db.passport, {
+                userId: existCustomer.id,
+                userType: 'CUSTOMER',
+                providerType: 'LOCAL'
             })
             if (!passportData)
                 throw new Error(`This ${email} account provider not exist!`)
@@ -75,26 +61,26 @@ export const loginMutation = {
             let matchPassword = await comparePassword(password, passportData.password)
             if (!matchPassword) throw new Error(`Password Mismatch!`)
 
-            //Todo token create logic is pending!
-
+            //Create JWT token for the user that going to be loggin
             let token = await jwt.sign(
                 {
-                    user_id: existCustomer.id,
+                    userId: existCustomer.id,
                     email: existCustomer.email
                 },
                 process.env.TOKEN_SECRET,
                 {expiresIn: 3600000}
             );
-            //Do entry of this token into the database
-            await tokens.create({
+
+            //Insert record to tokens table for created jwt token!
+            await insertRecord(db.tokens,{
                 type: 'CUSTOMER',
                 token,
-                login_time: moment(),
-                user_id: existCustomer.id,
-                token_expiry: moment().add(3600, 'seconds')
+                loginTime: moment(),
+                userId: existCustomer.id,
+                tokenExpiry: moment().add(3600, 'seconds')
             })
 
-            return {token, user_id: existCustomer.id};
+            return {token, userId: existCustomer.id};
         } catch (e) {
             throw Error(`Internal Error: ${e}`);
         }

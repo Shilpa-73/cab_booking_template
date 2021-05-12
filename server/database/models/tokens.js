@@ -15,31 +15,38 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    token_expiry: {
+    tokenExpiry: {
+      field:'token_expiry',
       type: DataTypes.DATE,
       allowNull: false
     },
-    login_time: {
+    loginTime: {
+      field:'login_time',
       type: DataTypes.DATE,
       allowNull: false
     },
-    logout_time: {
+    logoutTime: {
+      field:'logout_time',
       type: DataTypes.DATE
     },
-    user_id: {
+    userId: {
+      field:'user_id',
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

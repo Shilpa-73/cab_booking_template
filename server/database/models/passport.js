@@ -6,12 +6,14 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    user_type: {
+    userType: {
+      field:'user_type',
       type: DataTypes.ENUM("CUSTOMER","DRIVER"),
       allowNull: false,
       defaultValue: "CUSTOMER"
     },
-    provider_type: {
+    providerType: {
+      field:'provider_type',
       type: DataTypes.ENUM("GOOGLE","GITHUB","LOCAL"),
       allowNull: false,
       defaultValue: "GOOGLE"
@@ -20,24 +22,29 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    service_provider_id: {
+    serviceProviderId: {
+      field:'service_provider_id',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    user_id: {
+    userId: {
+      field:'user_id',
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    created_at: {
+    createdAt: {
+      field:'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field:'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field:'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }

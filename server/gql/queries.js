@@ -10,6 +10,7 @@ import {VehicleSubCategory, vehicleSubCategoryQueries} from '@gql/models/vehicle
 import {bookingQueries} from '@gql/models/bookings';
 import {nearestVehicleQueries} from '@gql/customQueries/nearestVehicle';
 import {isLoggedinQuery} from '@gql/customQueries/me';
+import {pastBookingQueries} from '@gql/customQueries/pastBookings';
 
 const {nodeField, nodeTypeMapper} = getNode();
 
@@ -22,7 +23,8 @@ const DB_TABLES = {
 };
 
 const CUSTOMS = {
-    nearestVehicle: nearestVehicleQueries,
+    nearestCabs: nearestVehicleQueries,
+    pastBookings:pastBookingQueries,
     me: isLoggedinQuery
 };
 
