@@ -11,21 +11,49 @@
     "start": "node dist/index.bundle.js",
     "webpack:build": "export ENVIRONMENT_NAME=local && rimraf dist && webpack --mode development --config webpack.config.js",
     "local": "yarn run webpack:build && yarn run start",
-    "lint": "eslint --fix . && echo 'Lint complete.'"
+    "lint:fix": "eslint --fix . && echo 'Lint complete.'",
+    "lint": "npm run lint:js",
+    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern server/bin",
+    "lint:eslint:fix": "eslint --ignore-path .gitignore --ignore-pattern server/bin --fix",
+    "lint:js": "npm run lint:eslint -- . ",
+    "lint:staged": "lint-staged",
+    "prettify": "prettier --write",
+    "precommit": "lint:staged"
   },
   "dependencies": {
     "@babel/cli": "^7.13.16",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.12.13",
+    "@babel/plugin-transform-runtime": "^7.13.15",
+    "@babel/polyfill": "^7.12.1",
     "babel-loader": "^8.2.2",
+    "bcryptjs": "^2.4.3",
+    "cls-rtracer": "^2.6.0",
     "crypto": "^1.0.1",
     "dotenv": "^9.0.0",
     "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "faker": "^5.5.3",
     "fs": "^0.0.1-security",
+    "global": "^4.4.0",
+    "graphql": "^15.5.0",
+    "graphql-relay": "^0.6.0",
+    "graphql-sequelize": "^9.4.3",
     "http": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "lint-staged": "^11.0.0",
+    "moment": "^2.29.1",
     "net": "^1.0.2",
     "path": "^0.12.7",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.3",
+    "pg-native": "^3.0.0",
+    "pluralize": "^8.0.0",
     "sequelize": "^6.6.2",
+    "sequelize-auto": "^0.8.2",
     "stream": "^0.0.2",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -38,6 +66,7 @@
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-prettier-standard": "^4.0.1",
+    "husky": "^6.0.0",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "prettier-config-standard": "^4.0.0",
@@ -46,5 +75,20 @@
     "shelljs": "^0.8.4",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:eslint:fix",
+      "git add --force"
+    ],
+    "*.json": [
+      "prettier --write",
+      "git add --force"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

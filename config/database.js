@@ -1,3 +1,4 @@
+require('dotenv').config();
 module.exports = {
     local: {
         url: process.env.DB_URI,
@@ -13,7 +14,8 @@ module.exports = {
                 userscored: true,
                 timestamps: false
             }
-        }
+        },
+        "migrationStorageTableName": "sequelize_meta"
     },
     development: {
         url: process.env.DB_URI,
