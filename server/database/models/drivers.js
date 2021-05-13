@@ -7,17 +7,17 @@ export function getAttributes(sequelize, DataTypes) {
       primaryKey: true
     },
     firstName: {
-      field:'first_name',
+      field: 'first_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
     lastName: {
-      field:'last_name',
+      field: 'last_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
     mobileNo: {
-      field:'mobile_no',
+      field: 'mobile_no',
       type: DataTypes.STRING(20),
       allowNull: false
     },
@@ -26,7 +26,7 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: true
     },
     birthDate: {
-      field:'birth_date',
+      field: 'birth_date',
       type: DataTypes.DATE,
       allowNull: true
     },
@@ -47,7 +47,7 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false
     },
     drivingLicenseNumber: {
-      field:'driving_license_number',
+      field: 'driving_license_number',
       type: DataTypes.TEXT,
       allowNull: false
     },
@@ -57,49 +57,45 @@ export function getAttributes(sequelize, DataTypes) {
       defaultValue: true
     },
     createdAt: {
-      field:'created_at',
+      field: 'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
     updatedAt: {
-      field:'updated_at',
+      field: 'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
     deletedAt: {
-      field:'deleted_at',
+      field: 'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }
-  }
-};
+  };
+}
 
-export function model(sequelize, DataTypes){
+export function model(sequelize, DataTypes) {
   const drivers = sequelize.define('drivers', getAttributes(sequelize, DataTypes), {
     tableName: 'drivers',
     paranoid: true,
-    underscored:true,
+    underscored: true,
     timestamps: true,
     indexes: [
       {
-        name: "drivers_email",
-        fields: [
-          { name: "email" },
-        ]
+        name: 'drivers_email',
+        fields: [{ name: 'email' }]
       },
       {
-        name: "drivers_pkey",
+        name: 'drivers_pkey',
         unique: true,
-        fields: [
-          { name: "id" },
-        ]
-      },
+        fields: [{ name: 'id' }]
+      }
     ]
   });
 
-  drivers.associate = function(models) {
-    drivers.hasMany(models.bookings, { as: "bookings", foreignKey: "driver_id"});
+  drivers.associate = function (models) {
+    drivers.hasMany(models.bookings, { as: 'bookings', foreignKey: 'driver_id' });
   };
   return drivers;
 }

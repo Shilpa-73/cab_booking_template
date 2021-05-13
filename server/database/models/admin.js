@@ -1,4 +1,4 @@
-export  function getAttributes(sequelize, DataTypes) {
+export function getAttributes(sequelize, DataTypes) {
   return {
     id: {
       autoIncrement: true,
@@ -7,17 +7,17 @@ export  function getAttributes(sequelize, DataTypes) {
       primaryKey: true
     },
     firstName: {
-      field:'first_name',
+      field: 'first_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
     lastName: {
-      field:'last_name',
+      field: 'last_name',
       type: DataTypes.STRING(20),
       allowNull: false
     },
     cabStationId: {
-      field:'cab_station_id',
+      field: 'cab_station_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -30,43 +30,39 @@ export  function getAttributes(sequelize, DataTypes) {
       allowNull: false
     },
     createdAt: {
-      field:'created_at',
+      field: 'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
     updatedAt: {
-      field:'updated_at',
+      field: 'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
     deletedAt: {
-      field:'deleted_at',
+      field: 'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }
-  }
-};
+  };
+}
 
-export function model(sequelize, DataTypes){
+export function model(sequelize, DataTypes) {
   const admin = sequelize.define('admin', getAttributes(sequelize, DataTypes), {
     tableName: 'admin',
     paranoid: true,
-    underscored:true,
+    underscored: true,
     timestamps: true,
     indexes: [
-    {
-      name: "admin_pkey",
-      unique: true,
-      fields: [
-        { name: "id" },
-      ]
-    },
-  ]
+      {
+        name: 'admin_pkey',
+        unique: true,
+        fields: [{ name: 'id' }]
+      }
+    ]
   });
 
-  admin.associate = function(models) {
-
-  };
+  admin.associate = function (models) {};
   return admin;
 }
