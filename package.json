@@ -14,7 +14,7 @@
     "lint:fix": "eslint --fix . && echo 'Lint complete.'",
     "lint": "npm run lint:js",
     "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern server/bin",
-    "lint:eslint:fix": "eslint --ignore-path .gitignore --ignore-pattern server/bin --fix server/",
+    "lint:eslint:fix": "eslint --ignore-path .gitignore --ignore-pattern server/bin --fix",
     "lint:js": "npm run lint:eslint -- . ",
     "lint:staged": "lint-staged",
     "prettify": "prettier --write",
