@@ -14,7 +14,10 @@ export const isAuthenticated = async (req, res, next) => {
     req.headers.authorization = process.env.TEMP_TOKEN;
     const jwtToken = req.headers.authorization || process.env.TEMP_TOKEN;
 
-    const unused = {};
+    const unused = {
+
+
+    };
 
     // Todo to remove later static data above
     if (!jwtToken) {
