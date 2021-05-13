@@ -15,6 +15,7 @@ export const tables = {
 
 let unUsed={
   a:'3'
+
 }
 
 export const BOOKING_STATUS = {
