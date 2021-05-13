@@ -88,6 +88,7 @@
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0"
   },
+  "precommit": "lint:staged",
   "lint-staged": {
     "*.js": [
       "npm run lint:eslint:fix",
