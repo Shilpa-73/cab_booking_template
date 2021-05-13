@@ -22,6 +22,25 @@ export const updateUsingId = async (model, args) => {
   return model.findOne({ where: { id: args.id } });
 };
 
+export const upsertUsingCriteria = async (model, args, criteria) => {
+  let affectedRows;
+  try {
+    [affectedRows] = await model.update(args, {
+      where: {
+        ...criteria,
+        deletedAt: null
+      }
+    });
+  } catch (e) {
+    throw new Error(`Failed to update ${model.name}`);
+  }
+  if (!affectedRows) {
+    // create a new record
+    args.id = await model.create({ ...args });
+  }
+  return model.findOne({ where: { id: args.id } });
+};
+
 export const deleteUsingId = async (model, args) => {
   let affectedRows;
   try {

@@ -2,8 +2,8 @@ import { convertDbResponseToRawResponse, transformDbArrayResponseToRawResponse }
 import { BOOKING_STATUS } from '../utils/constants';
 import db from '@database/models';
 import { Op } from 'sequelize';
+import moment from 'moment';
 
-const YYYYMMDDHHmmss = 'YYYY-MM-DD HH:mm:ss';
 export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, status = [] }) => {
   const where = {
     status: { [Op.in]: [BOOKING_STATUS.CONFIRMED] }
@@ -19,8 +19,8 @@ export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, s
 
   if (startDate) {
     where.createdAt = {
-      [Op.gt]: new Date().setHours(0, 0, 0, 0),
-      [Op.lt]: new Date()
+      [Op.gt]: moment(moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
+      [Op.lt]: moment()
     };
   }
 

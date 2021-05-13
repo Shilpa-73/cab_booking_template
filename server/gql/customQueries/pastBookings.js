@@ -1,14 +1,6 @@
-import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLList,
-  GraphQLFloat
-} from 'graphql';
-import db from '@database/models';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLList } from 'graphql';
 import { getPastBookingDetailsOfCustomer } from '@daos/bookings';
+import { USER_TYPE } from '../../utils/constants';
 
 const pastBookingResponseFields = new GraphQLObjectType({
   name: 'pastBookingResponseFields',
@@ -72,8 +64,10 @@ export const pastBookingQueries = {
   args: {
     ...bookingListArgs
   },
-  async resolve(source, { ...rest }, context, info) {
+  async resolve(source, { ...rest }, { user, isAuthenticatedUser }, info) {
     try {
+      await isAuthenticatedUser({ user, type: USER_TYPE.CUSTOMER });
+
       const allBookings = await getPastBookingDetailsOfCustomer({
         customerId: 51, // Todo to remove later static customer-id!
         ...rest

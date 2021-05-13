@@ -29,10 +29,6 @@ module.exports = {
           throw e;
         });
     }
-
-    const unused = 'data';
-    const hello = 'HI';
-    const numVal = 5;
   },
   getVersion
 };

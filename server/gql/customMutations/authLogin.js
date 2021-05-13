@@ -3,7 +3,8 @@ import db from '@database/models';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { comparePassword } from '@database/bcrypt';
-import { findOneById, findOneByCriteria, insertRecord } from '@database/dbUtils';
+import { findOneByCriteria, insertRecord } from '@database/dbUtils';
+import { USER_TYPE } from '../../utils/constants';
 
 // This is response fields of the query
 export const loginUserFields = {
@@ -50,7 +51,7 @@ export const loginMutation = {
       // If customer is present check the password is matching or not!
       const passportData = await findOneByCriteria(db.passport, {
         userId: existCustomer.id,
-        userType: 'CUSTOMER',
+        userType: USER_TYPE.CUSTOMER,
         providerType: 'LOCAL'
       });
       if (!passportData) throw new Error(`This ${email} account provider not exist!`);
@@ -64,7 +65,7 @@ export const loginMutation = {
         {
           userId: existCustomer.id,
           email: existCustomer.email,
-          userType: 'CUSTOMER'
+          userType: USER_TYPE.CUSTOMER
         },
         process.env.TOKEN_SECRET,
         { expiresIn: 3600000 }
@@ -72,7 +73,7 @@ export const loginMutation = {
 
       // Insert record to tokens table for created jwt token!
       await insertRecord(db.tokens, {
-        type: 'CUSTOMER',
+        type: USER_TYPE.CUSTOMER,
         token,
         loginTime: moment(),
         userId: existCustomer.id,
@@ -80,6 +81,57 @@ export const loginMutation = {
       });
 
       return { token, userId: existCustomer.id };
+    } catch (e) {
+      throw Error(`Internal Error: ${e}`);
+    }
+  },
+  description: 'Login mutation for customer!'
+};
+
+export const driverLoginMutation = {
+  type: loginResponse,
+  args: {
+    ...loginUserArgs
+  },
+  async resolve(source, { email, password }, context, info) {
+    try {
+      // Check given email customer is exist or not!
+      const existDriver = await findOneByCriteria(db.drivers, { email: email.toLowerCase() });
+      if (!existDriver) throw new Error(`This driver:${email} account does not exist!`);
+
+      // If customer is present check the password is matching or not!
+      const passportData = await findOneByCriteria(db.passport, {
+        userId: existDriver.id,
+        userType: USER_TYPE.DRIVER,
+        providerType: 'LOCAL'
+      });
+      if (!passportData) throw new Error(`This ${email} account provider not exist!`);
+
+      // Compare the password
+      const matchPassword = await comparePassword(password, passportData.password);
+      if (!matchPassword) throw new Error(`Password Mismatch!`);
+
+      // Create JWT token for the user that going to be loggin
+      const token = await jwt.sign(
+        {
+          userId: existDriver.id,
+          email: existDriver.email,
+          userType: USER_TYPE.DRIVER
+        },
+        process.env.TOKEN_SECRET,
+        { expiresIn: 3600000 }
+      );
+
+      // Insert record to tokens table for created jwt token!
+      await insertRecord(db.tokens, {
+        type: USER_TYPE.DRIVER,
+        token,
+        loginTime: moment(),
+        userId: existDriver.id,
+        tokenExpiry: moment().add(3600, 'seconds')
+      });
+
+      return { token, userId: existDriver.id };
     } catch (e) {
       throw Error(`Internal Error: ${e}`);
     }

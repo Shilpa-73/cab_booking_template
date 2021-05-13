@@ -1,5 +1,6 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLFloat } from 'graphql';
 import { bookCabs, checkCabAvailability, getCabById } from '../../daos/cabs';
+import { USER_TYPE } from '../../utils/constants';
 
 // This is response fields of the query
 export const cabBookingFields = {
@@ -60,10 +61,12 @@ export const cabBookingMutation = {
   async resolve(
     source,
     { pickupLat, pickupLong, destinationLat, destinationLong, pickupAddress, destinationAddress, vehicleId },
-    context,
+    { user, isAuthenticatedUser },
     info
   ) {
     try {
+      await isAuthenticatedUser({ user, type: USER_TYPE.CUSTOMER });
+
       // Check the cab that is customer is requesting is available or not!
       const cabAvailable = await checkCabAvailability(vehicleId);
       if (!cabAvailable) throw new Error(`The requested cab is not available for booking!`);
@@ -73,7 +76,7 @@ export const cabBookingMutation = {
       const cabDetails = await getCabById(vehicleId);
 
       // Do entry in the booking table for booking request!
-      const response = await bookCabs({
+      await bookCabs({
         pickupLat,
         pickupLong,
         destinationLat,

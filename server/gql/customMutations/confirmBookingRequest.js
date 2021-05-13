@@ -1,8 +1,9 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean } from 'graphql';
 import { getBookingById } from '../../daos/bookings';
-import { updateUsingId } from '../../database/dbUtils';
+import { updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
 import db from '@database/models';
-import { BOOKING_STATUS } from '../../utils/constants';
+import { ADDRESS_TYPE, BOOKING_STATUS, USER_TYPE } from '../../utils/constants';
+import moment from 'moment';
 
 // This is response fields of the query
 export const confirmBookingFields = {
@@ -31,14 +32,16 @@ export const confirmBookingResponse = new GraphQLObjectType({
   })
 });
 
-// First time driver confirm the request!
+// First time driver confirm the request! & customer will receive the message for updates
 export const confirmBookingMutation = {
   type: confirmBookingResponse,
   args: {
     ...confirmBookingArgs
   },
-  async resolve(source, { bookingId, lat, long }, context, info) {
+  async resolve(source, { bookingId, lat, long }, { user, isAuthenticatedUser }, info) {
     try {
+      await isAuthenticatedUser({ user, type: USER_TYPE.DRIVER });
+
       // Check the cab that is customer is requesting is available or not!
       const bookingAvailable = await getBookingById(bookingId);
       if (!bookingAvailable) throw new Error(`The booking is not available!`);
@@ -47,10 +50,41 @@ export const confirmBookingMutation = {
       await updateUsingId(db.bookings, {
         id: bookingId,
         status: BOOKING_STATUS.CAB_ASSIGNED,
-        driverId: 1 // Todo to remove later and use user.id from the context! after auth middleware implementation
+        startTime: moment(),
+        driverId: user.userId || 1 // Todo to remove later and use user.id from the context! after auth middleware implementation
       });
 
       // Todo set driver address and cab address lat/long to its related table!
+      await Promise.all([
+        new Promise((resolve, reject) => {
+          upsertUsingCriteria(
+            db.address,
+            {
+              lat,
+              long
+            },
+            {
+              itemId: bookingAvailable.driverId,
+              type: ADDRESS_TYPE.DRIVER
+            }
+          );
+          resolve();
+        }),
+        new Promise((resolve, reject) => {
+          upsertUsingCriteria(
+            db.address,
+            {
+              lat,
+              long
+            },
+            {
+              itemId: bookingAvailable.vehicleId,
+              type: ADDRESS_TYPE.VEHICLE
+            }
+          );
+          resolve();
+        })
+      ]);
 
       return {
         flag: true,
@@ -69,8 +103,10 @@ export const updateBookingMutation = {
   args: {
     ...confirmBookingArgs
   },
-  async resolve(source, { bookingId, startTime, endTime, lat, long }, context, info) {
+  async resolve(source, { bookingId, endTime, lat, long }, { user, isAuthenticatedUser }, info) {
     try {
+      await isAuthenticatedUser({ user, type: USER_TYPE.DRIVER });
+
       // Check the cab that is customer is requesting is available or not!
       const bookingAvailable = await getBookingById(bookingId);
       if (!bookingAvailable) throw new Error(`The booking is not available!`);
@@ -78,12 +114,43 @@ export const updateBookingMutation = {
       // Do entry in the booking table for booking request!
       await updateUsingId(db.bookings, {
         id: bookingId,
-        startTime,
         endTime,
         status: BOOKING_STATUS.CONFIRMED
       });
 
-      // Todo set driver address and cab address lat/long to its related table!
+      // Todo testing pending!
+      await Promise.all([
+        new Promise((resolve, reject) => {
+          upsertUsingCriteria(
+            db.address,
+            {
+              lat,
+              long
+            },
+            {
+              itemId: bookingAvailable.driverId,
+              type: ADDRESS_TYPE.DRIVER
+            }
+          );
+          resolve();
+        }),
+        new Promise((resolve, reject) => {
+          upsertUsingCriteria(
+            db.address,
+            {
+              lat,
+              long
+            },
+            {
+              itemId: bookingAvailable.vehicleId,
+              type: ADDRESS_TYPE.VEHICLE
+            }
+          );
+          resolve();
+        })
+      ]);
+
+      // Todo on a confirmation of booking , Do entry in a payments table!
 
       return {
         flag: true,

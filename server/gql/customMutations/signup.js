@@ -2,6 +2,7 @@ import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBo
 import db from '@database/models';
 import { generatePassword } from '@database/bcrypt';
 import { findOneByCriteria, insertRecord } from '../../database/dbUtils';
+import { USER_TYPE } from '../../utils/constants';
 
 // This is response fields of the signup response
 export const signupUserFields = {
@@ -93,7 +94,7 @@ export const signupMutations = {
 
       // Create password
       await insertRecord(db.passport, {
-        userType: 'CUSTOMER',
+        userType: USER_TYPE.CUSTOMER,
         providerType: 'LOCAL',
         password: generatedPassword,
         userId: customer.id

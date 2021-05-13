@@ -7,8 +7,8 @@ import {
   GraphQLList,
   GraphQLFloat
 } from 'graphql';
-import db from '@database/models';
 import { getNearestAvailableCabs } from '@daos/cabs';
+import { USER_TYPE } from '../../utils/constants';
 
 const vehicleResponse = new GraphQLObjectType({
   name: 'vehicleResponse',
@@ -66,8 +66,9 @@ export const nearestVehicleQueries = {
   args: {
     ...nearestVehicleArgs
   },
-  async resolve(source, { lat, long }, context, info) {
+  async resolve(source, { lat, long }, { user, isAuthenticatedUser }, info) {
     try {
+      await isAuthenticatedUser({ user, type: USER_TYPE.CUSTOMER });
       const allNearestVehicles = await getNearestAvailableCabs({ lat, long });
 
       return {

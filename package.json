@@ -99,5 +99,10 @@
       "prettier --write",
       "git add --force"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

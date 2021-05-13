@@ -19,3 +19,14 @@ export const BOOKING_STATUS = {
   CONFIRMED: 'CONFIRMED',
   NOT_AVAILABLE: 'NOT_AVAILABLE'
 };
+
+export const USER_TYPE = {
+  CUSTOMER: 'CUSTOMER',
+  DRIVER: 'DRIVER',
+  ADMIN: 'ADMIN'
+};
+
+export const ADDRESS_TYPE = {
+  DRIVER: 'DRIVER',
+  VEHICLE: 'VEHICLE'
+};

@@ -1,13 +1,6 @@
-import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLList,
-  GraphQLFloat
-} from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean } from 'graphql';
 import db from '@database/models';
+import { findOneById } from '../../database/dbUtils';
 
 const userFields = new GraphQLObjectType({
   name: 'userFields',
@@ -45,19 +38,20 @@ export const isLoggedinResponse = new GraphQLObjectType({
 export const isLoggedinQuery = {
   type: isLoggedinResponse,
   args: {},
-  async resolve(source, {}, { user }, info) {
+  async resolve(source, args, { user }, info) {
     try {
-      const { Customers } = db;
-
-      console.log(`context user data is here!`, user);
-
       // make sure user is logged in
       if (!user) {
         throw new Error('You are not authenticated!');
       }
 
       // user is authenticated
-      return await Customers.findById(user.id);
+      const userData = await findOneById(db.customers, { id: user.userId });
+      if (!userData) throw new Error('The requested account is no more exist!');
+      return {
+        flag: true,
+        data: userData
+      };
     } catch (e) {
       throw Error(`Internal Error: ${e}`);
     }

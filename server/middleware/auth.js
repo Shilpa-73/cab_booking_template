@@ -1,6 +1,11 @@
-import { logger } from '@utils/logger';
 import jwt from 'express-jwt';
-import jwtPermission from 'express-jwt-permissions';
+
+// Todo to remove this later!
+export const useDummyToken = (req, res, next) => {
+  req.headers.authorization = `Bearer ${process.env.TEMP_TOKEN}`;
+  console.log(`process.env.TEMP_TOKEN is here`, process.env.TEMP_TOKEN);
+  next();
+};
 
 export const verifyJwt = () =>
   jwt({
@@ -9,25 +14,12 @@ export const verifyJwt = () =>
     algorithms: ['HS256']
   });
 
-export const isAuthenticated = async (req, res, next) => {
+export const isAuthenticatedUser = async ({ user, type }) => {
   try {
-    req.headers.authorization = process.env.TEMP_TOKEN;
-    const jwtToken = req.headers.authorization || process.env.TEMP_TOKEN;
+    if (user.userType !== type) throw new Error(`Only ${type} of user can access this query/mutation!`);
 
-    const unused = {};
-
-    // Todo to remove later static data above
-    if (!jwtToken) {
-      return next();
-      // return res.status(401).send('Access Token missing from header');
-    } else {
-      console.log(`in the else part for verifying the token!`);
-      const data = await verifyJwt();
-      console.log(`main dta`, data);
-      console.log(`after verified `, req.user);
-      next();
-    }
+    return Promise.resolve();
   } catch (err) {
-    return res.status(500).send(err.message || 'Internal server error');
+    return Promise.reject(err);
   }
 };

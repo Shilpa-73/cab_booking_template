@@ -1,13 +1,8 @@
-import {
-  convertDbResponseToRawResponse,
-  mapKeysToCamelCase,
-  transformDbArrayResponseToRawResponse
-} from '../database/dbUtils';
+import { convertDbResponseToRawResponse, mapKeysToCamelCase } from '../database/dbUtils';
 import { tables } from '../utils/constants';
 import db from '@database/models';
 import { Op } from 'sequelize';
-
-const YYYYMMDDHHmmss = 'YYYY-MM-DD HH:mm:ss';
+import moment from 'moment';
 
 // Check the requested cab is available to book or not!
 export const checkCabAvailability = async (cabId) => {
@@ -19,8 +14,8 @@ export const checkCabAvailability = async (cabId) => {
       vehicleId: cabId,
       endTime: null,
       createdAt: {
-        [Op.gt]: new Date().setHours(0, 0, 0, 0),
-        [Op.lt]: new Date()
+        [Op.gt]: moment(moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
+        [Op.lt]: moment()
       }
     },
     raw: true
@@ -39,8 +34,8 @@ export const getNearestAvailableCabs = async ({ lat, long }) => {
       status: 'CAB_ASSIGNED',
       endTime: null,
       createdAt: {
-        [Op.gt]: new Date().setHours(0, 0, 0, 0),
-        [Op.lt]: new Date()
+        [Op.gt]: moment(moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
+        [Op.lt]: moment()
       }
     }
   });
