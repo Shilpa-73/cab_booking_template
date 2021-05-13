@@ -18,8 +18,13 @@
     "lint:js": "npm run lint:eslint -- . ",
     "lint:staged": "lint-staged",
     "prettify": "prettier --write",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
   },
+  "pre-commit": [
+    "precommit-msg",
+    "lint:staged"
+  ],
   "dependencies": {
     "@babel/cli": "^7.13.16",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
