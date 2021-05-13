@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 export const tables = {
   admin: 'admin',
   cabStations: 'cabStations',
@@ -14,14 +12,6 @@ export const tables = {
   payments: 'payments',
   address: 'address'
 };
-
-const unUsed = {
-
-
-  a: '3'
-};
-
-console.log(`temp adatatta is`);
 
 export const BOOKING_STATUS = {
   REQUESTED: 'REQUESTED',

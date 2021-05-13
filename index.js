@@ -17,11 +17,6 @@ dotenv.config();
 // connect to database
 connect();
 
-const unUSedVar = {
-
-
-};
-
 // create the graphQL schema
 const schema = new GraphQLSchema({ query: QueryRoot, mutation: MutationRoot });
 
