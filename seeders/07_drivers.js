@@ -25,7 +25,7 @@ module.exports = {
             max: 4000
           })
           .toString(),
-      email: (faker.internet.email()).toLowerCase(),
+      email: faker.internet.email().toLowerCase(),
       birth_date: faker.date.past(),
       country: faker.address.country(),
       city: faker.address.city(),
@@ -35,12 +35,12 @@ module.exports = {
       active: true
     }));
 
-    //Add one dummy customer for testing purpose
+    // Add one dummy customer for testing purpose
     arr.push({
-      email: "anil@gmail.com",
-      first_name:"chirag",
-      last_name:"test",
-      mobile_no:"9978990967",
+      email: 'anil@gmail.com',
+      first_name: 'chirag',
+      last_name: 'test',
+      mobile_no: '9978990967',
       birth_date: faker.date.past(),
       country: faker.address.country(),
       city: faker.address.city(),
@@ -48,7 +48,7 @@ module.exports = {
       address: faker.address.streetAddress(),
       driving_license_number: faker.random.number(),
       active: true
-    })
+    });
     return queryInterface.bulkInsert('drivers', arr, {});
   },
   down: (queryInterface) => queryInterface.bulkDelete('drivers', null, {})
