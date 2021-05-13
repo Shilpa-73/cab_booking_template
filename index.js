@@ -14,6 +14,9 @@ const port = 3000;
 
 dotenv.config();
 
+console.log(`prec omm`)
+const unIsed = {}
+
 // connect to database
 connect();
 
