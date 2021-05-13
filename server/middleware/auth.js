@@ -18,6 +18,7 @@ export const isAuthenticated = async (req, res, next) => {
 
 
 
+
     };
 
     // Todo to remove later static data above
