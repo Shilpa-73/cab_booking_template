@@ -13,6 +13,10 @@ export const tables = {
   address: 'address'
 };
 
+let unUsed={
+  a:'3'
+}
+
 export const BOOKING_STATUS = {
   REQUESTED: 'REQUESTED',
   CAB_ASSIGNED: 'CAB_ASSIGNED',
