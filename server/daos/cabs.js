@@ -96,9 +96,7 @@ export const getCabById = async (cabId) =>
 export const bookCabs = async ({ cabId, ...rest }) => {
   const response = {};
   try {
-    response.bookingData = await db.bookings.create({
-      ...rest
-    });
+    response.bookingData = await db.bookings.create(rest);
 
     return Promise.resolve(response);
   } catch (e) {

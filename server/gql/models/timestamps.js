@@ -7,5 +7,5 @@ export const timestamps = {
 
 export const times = {
   startTime: { sqlColumn: 'start_time', type: GraphQLTime },
-  endTime: { sqlColumn: 'start_time', type: GraphQLTime }
+  endTime: { sqlColumn: 'end_time', type: GraphQLTime }
 };
