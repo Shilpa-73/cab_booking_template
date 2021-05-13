@@ -1,6 +1,8 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLList } from 'graphql';
 import { getPastBookingDetailsOfCustomer } from '@daos/bookings';
 import { USER_TYPE } from '../../utils/constants';
+import { GraphQLDateTime } from 'graphql-iso-date/dist';
+import { timestamps, times } from '../models/timestamps';
 
 const pastBookingResponseFields = new GraphQLObjectType({
   name: 'pastBookingResponseFields',
@@ -20,12 +22,8 @@ const pastBookingResponseFields = new GraphQLObjectType({
     subCategory: {
       type: GraphQLString
     },
-    startTime: {
-      type: GraphQLString
-    },
-    endTime: {
-      type: GraphQLString
-    }
+    ...times,
+    ...timestamps
   })
 });
 
@@ -47,8 +45,12 @@ export const bookingListArgs = {
     description: 'status for the customer booking, show that the booking is confirmed or NA'
   },
   startDate: {
-    type: GraphQLString,
-    description: 'date for the customer want to fetch the record!'
+    type: GraphQLDateTime,
+    description: 'start date for the customer want to fetch the record!'
+  },
+  endDate: {
+    type: GraphQLDateTime,
+    description: 'end date for the customer want to fetch the record!'
   }
 };
 
@@ -69,7 +71,7 @@ export const pastBookingQueries = {
       await isAuthenticatedUser({ user, type: USER_TYPE.CUSTOMER });
 
       const allBookings = await getPastBookingDetailsOfCustomer({
-        customerId: 51, // Todo to remove later static customer-id!
+        customerId: user.userId || 51, // Todo to remove later static customer-id!
         ...rest
       });
 

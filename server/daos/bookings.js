@@ -4,7 +4,7 @@ import db from '@database/models';
 import { Op } from 'sequelize';
 import moment from 'moment';
 
-export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, status = [] }) => {
+export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, endDate, status = [] }) => {
   const where = {
     status: { [Op.in]: [BOOKING_STATUS.CONFIRMED] }
   };
@@ -19,8 +19,8 @@ export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, s
 
   if (startDate) {
     where.createdAt = {
-      [Op.gt]: moment(moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
-      [Op.lt]: moment()
+      [Op.gt]: moment(moment(startDate).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
+      [Op.lt]: endDate ? moment(moment(endDate).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })) : moment()
     };
   }
 
@@ -34,6 +34,11 @@ export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, s
           model: db.vehicles,
           attributes: ['id', 'vehicleNumber', 'modelNo'],
           as: 'vehicle'
+        },
+        {
+          model: db.drivers,
+          attributes: ['id', 'firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
+          as: 'driver'
         }
       ]
     })

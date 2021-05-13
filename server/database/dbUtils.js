@@ -59,9 +59,9 @@ export const deletedId = new GraphQLObjectType({
   fields: () => ({ id: { type: GraphQLNonNull(GraphQLInt) } })
 });
 
-export const findOneById = async (model, args) => {
+export const findOneById = async (model, id) => {
   try {
-    const data = await model.findOne({ where: { id: args.id }, raw: true });
+    const data = await model.findOne({ where: { id }, raw: true });
     return data;
   } catch (e) {
     throw new Error(e.message);

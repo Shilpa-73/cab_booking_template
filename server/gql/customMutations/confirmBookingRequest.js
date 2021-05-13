@@ -1,4 +1,5 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean } from 'graphql';
+import { GraphQLDateTime } from 'graphql-iso-date';
 import { getBookingById } from '../../daos/bookings';
 import { updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
 import db from '@database/models';
@@ -22,6 +23,12 @@ export const confirmBookingArgs = {
   bookingId: {
     type: GraphQLNonNull(GraphQLInt),
     description: 'id of booking request that driver wants to book!'
+  },
+  startTime: {
+    type: GraphQLDateTime
+  },
+  endTime: {
+    type: GraphQLDateTime
   }
 };
 

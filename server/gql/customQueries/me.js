@@ -46,7 +46,7 @@ export const isLoggedinQuery = {
       }
 
       // user is authenticated
-      const userData = await findOneById(db.customers, { id: user.userId });
+      const userData = await findOneById(db.customers, user.userId);
       if (!userData) throw new Error('The requested account is no more exist!');
       return {
         flag: true,
