@@ -22,7 +22,7 @@ db.bookings = require('@database/models/bookings').model(sequelize, Sequelize.Da
 db.payments = require('@database/models/payments').model(sequelize, Sequelize.DataTypes);
 db.address = require('@database/models/address').model(sequelize, Sequelize.DataTypes);
 
-Object.keys(db).forEach(modelName => {
+Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }

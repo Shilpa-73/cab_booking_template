@@ -7,12 +7,12 @@ export function getAttributes(sequelize, DataTypes) {
       primaryKey: true
     },
     type: {
-      type: DataTypes.ENUM("VEHICLE","DRIVER"),
+      type: DataTypes.ENUM('VEHICLE', 'DRIVER'),
       allowNull: false,
-      defaultValue: "DRIVER"
+      defaultValue: 'DRIVER'
     },
     itemId: {
-      field:'item_id',
+      field: 'item_id',
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -25,51 +25,44 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false
     },
     createdAt: {
-      field:'created_at',
+      field: 'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
     updatedAt: {
-      field:'updated_at',
+      field: 'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
     deletedAt: {
-      field:'deleted_at',
+      field: 'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }
-  }
-};
+  };
+}
 
-export function model(sequelize, DataTypes){
+export function model(sequelize, DataTypes) {
   const address = sequelize.define('address', getAttributes(sequelize, DataTypes), {
     tableName: 'address',
     paranoid: true,
-    underscored:true,
+    underscored: true,
     timestamps: true,
     indexes: [
       {
-        name: "address_pkey",
+        name: 'address_pkey',
         unique: true,
-        fields: [
-          { name: "id" },
-        ]
+        fields: [{ name: 'id' }]
       },
       {
-        name: "adress_type_item_id",
+        name: 'adress_type_item_id',
         unique: true,
-        fields: [
-          { name: "type" },
-          { name: "item_id" },
-        ]
-      },
+        fields: [{ name: 'type' }, { name: 'item_id' }]
+      }
     ]
   });
 
-  address.associate = function(models) {
-
-  };
+  address.associate = function (models) {};
   return address;
 }

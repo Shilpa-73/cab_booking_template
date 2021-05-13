@@ -7,12 +7,12 @@ export function getAttributes(sequelize, DataTypes) {
       primaryKey: true
     },
     vehicleNumber: {
-      field:'vehicle_number',
+      field: 'vehicle_number',
       type: DataTypes.STRING(20),
       allowNull: false
     },
     vehicleCategoryId: {
-      field:'vehicle_category_id',
+      field: 'vehicle_category_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -21,7 +21,7 @@ export function getAttributes(sequelize, DataTypes) {
       }
     },
     vehicleSubCategoryId: {
-      field:'vehicle_sub_category_id',
+      field: 'vehicle_sub_category_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -34,17 +34,17 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false
     },
     modelNo: {
-      field:'model_no',
+      field: 'model_no',
       type: DataTypes.TEXT,
       allowNull: false
     },
     brandName: {
-      field:'brand_name',
+      field: 'brand_name',
       type: DataTypes.TEXT,
       allowNull: false
     },
     manufacturingYear: {
-      field:'manufacturing_year',
+      field: 'manufacturing_year',
       type: DataTypes.STRING(4),
       allowNull: false
     },
@@ -54,48 +54,46 @@ export function getAttributes(sequelize, DataTypes) {
       defaultValue: true
     },
     createdAt: {
-      field:'created_at',
+      field: 'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
     updatedAt: {
-      field:'updated_at',
+      field: 'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
     deletedAt: {
-      field:'deleted_at',
+      field: 'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }
   };
-};
+}
 
-export function model(sequelize, DataTypes){
+export function model(sequelize, DataTypes) {
   const vehicles = sequelize.define('vehicles', getAttributes(sequelize, DataTypes), {
     tableName: 'vehicles',
     paranoid: true,
-    underscored:true,
+    underscored: true,
     timestamps: true,
     indexes: [
       {
-        name: "vehicles_pkey",
+        name: 'vehicles_pkey',
         unique: true,
-        fields: [
-          { name: "id" },
-        ]
-      },
+        fields: [{ name: 'id' }]
+      }
     ]
   });
 
-  vehicles.associate = function(models) {
-
-    vehicles.belongsTo(models.vehicleCategories,
-        { as: "vehicle_category", foreignKey: "vehicle_category_id"
-        });
-    vehicles.belongsTo(models.vehicleSubCategories, { as: "vehicle_sub_category", foreignKey: "vehicle_sub_category_id"});
-    vehicles.hasMany(models.bookings, { as: "bookings", foreignKey: "vehicle_id"});
+  vehicles.associate = function (models) {
+    vehicles.belongsTo(models.vehicleCategories, { as: 'vehicle_category', foreignKey: 'vehicle_category_id' });
+    vehicles.belongsTo(models.vehicleSubCategories, {
+      as: 'vehicle_sub_category',
+      foreignKey: 'vehicle_sub_category_id'
+    });
+    vehicles.hasMany(models.bookings, { as: 'bookings', foreignKey: 'vehicle_id' });
   };
   return vehicles;
 }

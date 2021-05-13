@@ -4,12 +4,12 @@ import { graphqlHTTP } from 'express-graphql';
 import { GraphQLSchema } from 'graphql';
 import { connect } from '@database';
 import rTracer from 'cls-rtracer';
-import jwt from 'express-jwt';
 import bodyParser from 'body-parser'
 
 import { QueryRoot } from '@gql/queries';
 import { MutationRoot } from '@gql/mutations';
 import { logger } from '@utils/logger';
+import {isAuthenticated} from "./server/middleware/auth";
 const app = express();
 const port = 3000;
 
@@ -24,22 +24,17 @@ const schema = new GraphQLSchema({ query: QueryRoot, mutation: MutationRoot });
 app.use(rTracer.expressMiddleware());
 
 app.use(
-  '/graphql',
+    '/graphql',
     bodyParser.json(),
-    jwt({
-        secret: process.env.TOKEN_SECRET,
-        credentialsRequired: false,
-        algorithms: ['RS256']
-    }),
-  graphqlHTTP((req)=>({
-      schema: schema,
-      graphiql: true,
-      context:{user:req.user},
-      customFormatErrorFn: (e) => {
-          logger().info({ e });
-          return e;
-      }
-  }))
+    isAuthenticated,
+    graphqlHTTP({
+        schema: schema,
+        graphiql: true,
+        customFormatErrorFn: (e) => {
+            logger().info({e});
+            return e;
+        }
+    })
 );
 
 app.get('/', (req, res) => {
