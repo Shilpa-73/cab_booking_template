@@ -96,7 +96,7 @@ export const getCabById = async (cabId) =>
 export const bookCabs = async ({ cabId, ...rest }) => {
   const response = {};
   try {
-    response.bookignData = await db.bookings.create({
+    response.bookingData = await db.bookings.create({
       ...rest
     });
 
