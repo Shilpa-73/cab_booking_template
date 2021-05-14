@@ -33,11 +33,11 @@ export const vehicleSubCategoriesTable = range(1, 10).map((value, index) => ({
 
 export const vehiclesTable = range(1, 10).map((value, index) => ({
   id: (index + 1).toString(),
-  vehicle_number: `GJ-5${faker.lorem.word().substr(1, 3)}${+faker.random.number({
+  vehicleNumber: `GJ-5${faker.lorem.word().substr(1, 3)}${+faker.random.number({
     min: 1004,
     max: 4000
   })}`,
-  owner_id: 1,
+  ownerId: 1,
   vehicleCategoryId: (index + 1) % 2 === 0 ? 1 : 2,
   vehicleSubCategoryId: index + 1 > 50 ? parseInt((index + 1) / 2) : index + 1,
   amount: 10,
