@@ -11,6 +11,11 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: false
     },
+    ownerId: {
+      field: 'owner_id',
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     vehicleCategoryId: {
       field: 'vehicle_category_id',
       type: DataTypes.INTEGER,

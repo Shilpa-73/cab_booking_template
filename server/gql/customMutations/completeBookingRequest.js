@@ -1,21 +1,39 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLFloat } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLFloat } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { getBookingById } from '../../daos/bookings';
-import { insertRecord, updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
+import { distanceDiff, insertRecord, updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
 import db from '@database/models';
 import { ADDRESS_TYPE, BOOKING_STATUS, USER_TYPE } from '../../utils/constants';
 import moment from 'moment';
 
+import { times } from '../models/timestamps';
+
 // This is response fields of the query
 export const completeBookingFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'The flag state the boolean value identify the booking is successful or not!'
+  id: {
+    type: GraphQLNonNull(GraphQLInt),
+    description: 'The id of the booking!'
   },
-  message: {
+  status: {
     type: GraphQLNonNull(GraphQLString),
-    description: 'The text message will show up on front-end!'
-  }
+    description: 'The current status of the booking request!'
+  },
+  pickupLat: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  pickupLong: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  destinationLat: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  destinationLong: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  amount: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  ...times
 };
 
 // This is a query argument that will passed from the graphiql/front-end
@@ -31,9 +49,6 @@ export const completeBookingArgs = {
   long: {
     type: GraphQLNonNull(GraphQLFloat),
     description: 'current long of driver'
-  },
-  amount: {
-    type: GraphQLNonNull(GraphQLInt)
   },
   endTime: {
     type: GraphQLDateTime
@@ -53,7 +68,7 @@ export const completeBookingMutation = {
   args: {
     ...completeBookingArgs
   },
-  async resolve(source, { bookingId, endTime, lat, long, amount }, { user, isAuthenticatedUser }, info) {
+  async resolve(source, { bookingId, endTime, lat, long }, { user, isAuthenticatedUser }, info) {
     try {
       await isAuthenticatedUser({ user, type: USER_TYPE.DRIVER });
 
@@ -64,12 +79,13 @@ export const completeBookingMutation = {
       if (bookingAvailable.status === BOOKING_STATUS.CONFIRMED) throw new Error(`This booking is already completed!`);
 
       // Do entry in the booking table for booking request!
-      await updateUsingId(db.bookings, {
+      const updatedBooking = await updateUsingId(db.bookings, {
         id: bookingId,
         endTime: endTime ? moment(endTime).format('HH:mm:ss') : moment().format('HH:mm:ss'),
         status: BOOKING_STATUS.CONFIRMED
-      });
+      }).then((data) => data.toJSON());
 
+      // In background update the vehicle/driver lat/long
       await Promise.all([
         new Promise((resolve, reject) => {
           upsertUsingCriteria(
@@ -101,18 +117,23 @@ export const completeBookingMutation = {
         })
       ]);
 
-      amount = amount || 100;
+      // Calculate distance in km to calculate the price below!
+      const km = distanceDiff(
+        bookingAvailable.pickupLat,
+        bookingAvailable.pickupLong,
+        bookingAvailable.destinationLat,
+        bookingAvailable.destinationLat
+      );
+      console.log(`km are`, km);
+      const amount = km * bookingAvailable.amount;
 
-      // Todo on a confirmation of booking , Do entry in a payments table!
       await insertRecord(db.payments, {
         bookingId: bookingAvailable.id,
         payableAmount: amount
       });
 
-      return {
-        flag: true,
-        message: `Your booking has been confirmed!`
-      };
+      updatedBooking.amount = amount;
+      return updatedBooking;
     } catch (e) {
       throw Error(`Internal Error: ${e}`);
     }

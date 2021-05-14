@@ -1,12 +1,4 @@
-import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLList,
-  GraphQLFloat
-} from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLList, GraphQLFloat } from 'graphql';
 import { getNearestAvailableCabs } from '@daos/cabs';
 import { USER_TYPE } from '../../utils/constants';
 
@@ -34,10 +26,6 @@ const vehicleResponse = new GraphQLObjectType({
 
 // This is response fields of the nearest vehicle queries
 export const nearestVehicleFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'This field state that the customer signup is done perfectly or not!'
-  },
   data: {
     type: GraphQLList(vehicleResponse)
   }
@@ -73,7 +61,6 @@ export const nearestVehicleQueries = {
       const allNearestVehicles = await getNearestAvailableCabs({ lat, long });
 
       return {
-        flag: true,
         data: allNearestVehicles
       };
     } catch (e) {

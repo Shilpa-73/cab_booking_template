@@ -1,16 +1,21 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLFloat } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLFloat } from 'graphql';
 import { bookCabs, checkCabAvailability, getCabById } from '../../daos/cabs';
 import { USER_TYPE } from '../../utils/constants';
+import { confirmBookingFields } from './confirmBookingRequest';
 
 // This is response fields of the query
 export const cabBookingFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'The flag state the boolean value identify the booking is successful or not!'
-  },
   bookingId: {
     type: GraphQLNonNull(GraphQLInt),
     description: 'Booking Id to trace the booking request!'
+  },
+  booking: {
+    type: new GraphQLObjectType({
+      name: 'bookingType',
+      fields: () => ({
+        ...confirmBookingFields
+      })
+    })
   },
   message: {
     type: GraphQLNonNull(GraphQLString),
@@ -94,8 +99,10 @@ export const cabBookingMutation = {
       });
 
       return {
-        flag: true,
         bookingId: response.bookingData.id,
+        booking: {
+          ...response.bookingData
+        },
         message: `Your booking has been requested!,
                  Please wait util confirmation`
       };

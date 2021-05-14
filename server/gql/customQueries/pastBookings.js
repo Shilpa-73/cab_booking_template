@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLList } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLList, GraphQLFloat } from 'graphql';
 import { getPastBookingDetailsOfCustomer } from '@daos/bookings';
 import { USER_TYPE } from '../../utils/constants';
 import { GraphQLDateTime } from 'graphql-iso-date/dist';
@@ -22,6 +22,18 @@ const pastBookingResponseFields = new GraphQLObjectType({
     subCategory: {
       type: GraphQLString
     },
+    pickupLat: {
+      type: GraphQLNonNull(GraphQLFloat)
+    },
+    pickupLong: {
+      type: GraphQLNonNull(GraphQLFloat)
+    },
+    destinationLat: {
+      type: GraphQLNonNull(GraphQLFloat)
+    },
+    destinationLong: {
+      type: GraphQLNonNull(GraphQLFloat)
+    },
     ...times,
     ...timestamps
   })
@@ -29,10 +41,6 @@ const pastBookingResponseFields = new GraphQLObjectType({
 
 // This is response fields of the past bookings queries
 export const pastBookingFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'This field state that the customer signup is done perfectly or not!'
-  },
   data: {
     type: GraphQLList(pastBookingResponseFields)
   }
@@ -76,7 +84,6 @@ export const pastBookingQueries = {
       });
 
       return {
-        flag: true,
         data: allBookings
       };
     } catch (e) {

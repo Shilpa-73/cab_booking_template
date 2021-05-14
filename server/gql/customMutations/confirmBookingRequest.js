@@ -1,21 +1,39 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLFloat } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLFloat } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { getBookingById } from '../../daos/bookings';
-import { updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
+import { distanceDiff, updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
 import db from '@database/models';
 import { ADDRESS_TYPE, BOOKING_STATUS, USER_TYPE } from '../../utils/constants';
 import moment from 'moment';
 
+import { times } from '../models/timestamps';
+
 // This is response fields of the query
 export const confirmBookingFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'The flag state the boolean value identify the booking is successful or not!'
+  id: {
+    type: GraphQLNonNull(GraphQLInt),
+    description: 'The id of the booking!'
   },
-  message: {
+  status: {
     type: GraphQLNonNull(GraphQLString),
-    description: 'The text message will show up on front-end!'
-  }
+    description: 'The current status of the booking request!'
+  },
+  pickupLat: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  pickupLong: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  destinationLat: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  destinationLong: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  amount: {
+    type: GraphQLNonNull(GraphQLFloat)
+  },
+  ...times
 };
 
 // This is a query argument that will passed from the graphiql/front-end
@@ -65,12 +83,12 @@ export const confirmBookingMutation = {
         throw new Error(`This booking request is already confirmed!`);
 
       // Do entry in the booking table for booking request!
-      await updateUsingId(db.bookings, {
+      const updatedBooking = await updateUsingId(db.bookings, {
         id: bookingId,
         status: BOOKING_STATUS.CAB_ASSIGNED,
         startTime: startTime ? moment(startTime).format('HH:mm:ss') : moment().format('HH:mm:ss'),
         driverId: user.userId || 1 // Todo to remove later and use user.id from the context! after auth middleware implementation
-      });
+      }).then((data) => data.toJSON());
 
       // Todo set driver address and cab address lat/long to its related table!
       await Promise.all([
@@ -108,9 +126,20 @@ export const confirmBookingMutation = {
         })
       ]);
 
+      const km = distanceDiff(
+        bookingAvailable.pickupLat,
+        bookingAvailable.pickupLong,
+        bookingAvailable.destinationLat,
+        bookingAvailable.destinationLat
+      );
+      console.log(`km are`, km);
+      const amount = km * bookingAvailable.amount;
+
+      console.log(`updatedBooking is `, updatedBooking);
+
       return {
-        flag: true,
-        message: `Your booking has been confirmed!`
+        ...updatedBooking,
+        amount
       };
     } catch (e) {
       throw Error(`Internal Error: ${e}`);

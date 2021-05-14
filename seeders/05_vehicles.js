@@ -8,12 +8,10 @@ module.exports = {
         min: 1004,
         max: 4000
       })}`,
+      owner_id: 1,
       vehicle_category_id: (index + 1) % 2 === 0 ? 1 : 2,
       vehicle_sub_category_id: index + 1 > 50 ? parseInt((index + 1) / 2) : index + 1,
-      amount: faker.finance.amount({
-        min: 5,
-        max: 20
-      }),
+      amount: 10,
       model_no: `${faker.lorem.word().substr(1, 3)}-${faker.lorem.word({
         min: 4,
         max: 7

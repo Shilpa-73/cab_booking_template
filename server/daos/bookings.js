@@ -32,12 +32,12 @@ export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, e
       include: [
         {
           model: db.vehicles,
-          attributes: ['id', 'vehicleNumber', 'modelNo'],
+          attributes: ['vehicleNumber', 'modelNo'],
           as: 'vehicle'
         },
         {
           model: db.drivers,
-          attributes: ['id', 'firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
+          attributes: ['firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
           as: 'driver'
         }
       ]
@@ -55,17 +55,17 @@ export const getBookingById = async (bookingId) =>
       include: [
         {
           model: db.vehicles,
-          attributes: ['id', 'vehicleNumber', 'modelNo'],
+          attributes: ['vehicleNumber', 'modelNo'],
           as: 'vehicle'
         },
         {
           model: db.customers,
-          attributes: ['id', 'firstName', 'lastName', 'mobileNo', 'email'],
+          attributes: ['firstName', 'lastName', 'mobileNo', 'email'],
           as: 'customer'
         },
         {
           model: db.drivers,
-          attributes: ['id', 'firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
+          attributes: ['firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
           as: 'driver'
         }
       ]

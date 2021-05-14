@@ -3,6 +3,7 @@ import { camelCase, isArray, isObject } from 'lodash';
 import { Op } from 'sequelize';
 import deepMapKeys from 'deep-map-keys';
 import mapKeysDeep from 'map-keys-deep';
+import { isDate } from 'moment';
 
 export const updateUsingId = async (model, args) => {
   let affectedRows;
@@ -100,7 +101,7 @@ export const sequelizedWhere = (currentWhere = {}, where = {}) => {
 export const removeDBReferenceKeyFromResponse = (dbResponse) => {
   let convertedObject = {};
   for (const [key, value] of Object.entries(dbResponse)) {
-    if (typeof value === 'object' && isObject(value)) {
+    if (typeof value === 'object' && isObject(value) && !isDate(value)) {
       convertedObject = Object.assign({}, convertedObject, removeDBReferenceKeyFromResponse(value));
     } else {
       const allKeys = key.split('.');
@@ -131,3 +132,12 @@ export const transformDbArrayResponseToRawResponse = (arr) => {
 
 export const mapKeysToCamelCase = (arr) =>
   arr.map((resource) => mapKeysDeep(removeDBReferenceKeyFromResponse(resource), (keys) => camelCase(keys)));
+
+// This will return the difference in miles!
+export const distanceDiff = (lat1, lon1, lat2, lon2) => {
+  const x = 69.1 * (lat2 - lat1);
+  const y = 69.1 * (lon2 - lon1) * Math.cos(lat1 / 57.3);
+
+  const km = Math.sqrt(x * x + y * y) * 1.60934;
+  return Math.round(km);
+};

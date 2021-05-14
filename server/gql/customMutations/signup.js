@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString } from 'graphql';
 import db from '@database/models';
 import { generatePassword } from '@database/bcrypt';
 import { findOneByCriteria, insertRecord } from '../../database/dbUtils';
@@ -6,10 +6,6 @@ import { USER_TYPE } from '../../utils/constants';
 
 // This is response fields of the signup response
 export const signupUserFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'This field state that the customer signup is done perfectly or not!'
-  },
   userId: {
     type: GraphQLNonNull(GraphQLInt),
     description: 'The user_id that is created after signup!'
@@ -77,8 +73,7 @@ export const signupMutations = {
       // Check if customer is already registered with this mobile no!
       const existCustomer = await findOneByCriteria(db.customers, { mobileNo });
       if (existCustomer)
-        throw new Error(`This ${mobileNo} is already registered, 
-                Please try with another mobile number!`);
+        throw new Error(`This ${mobileNo} is already registered, Please try with another mobile number!`);
 
       // Create bcrypt password
       const generatedPassword = await generatePassword(password);
@@ -101,7 +96,6 @@ export const signupMutations = {
       });
 
       return {
-        flag: true,
         userId: customer.id,
         message: `Your account is created. Please login to continue!`
       };
