@@ -1,11 +1,21 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLFloat } from 'graphql';
-import { bookCabs, checkCabAvailability, getCabById } from '../../daos/cabs';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLFloat } from 'graphql';
+import { bookCabs, checkCabAvailability, getCabById } from '@daos/cabs';
+import { USER_TYPE } from '@utils/constants';
+import { confirmBookingFields } from './confirmBookingRequest';
 
 // This is response fields of the query
 export const cabBookingFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'The flag state the boolean value identify the booking is successful or not!'
+  bookingId: {
+    type: GraphQLNonNull(GraphQLInt),
+    description: 'Booking Id to trace the booking request!'
+  },
+  booking: {
+    type: new GraphQLObjectType({
+      name: 'bookingType',
+      fields: () => ({
+        ...confirmBookingFields
+      })
+    })
   },
   message: {
     type: GraphQLNonNull(GraphQLString),
@@ -60,10 +70,12 @@ export const cabBookingMutation = {
   async resolve(
     source,
     { pickupLat, pickupLong, destinationLat, destinationLong, pickupAddress, destinationAddress, vehicleId },
-    context,
+    { user, isAuthenticatedUser },
     info
   ) {
     try {
+      await isAuthenticatedUser({ user, type: USER_TYPE.CUSTOMER });
+
       // Check the cab that is customer is requesting is available or not!
       const cabAvailable = await checkCabAvailability(vehicleId);
       if (!cabAvailable) throw new Error(`The requested cab is not available for booking!`);
@@ -73,7 +85,7 @@ export const cabBookingMutation = {
       const cabDetails = await getCabById(vehicleId);
 
       // Do entry in the booking table for booking request!
-      await bookCabs({
+      const response = await bookCabs({
         pickupLat,
         pickupLong,
         destinationLat,
@@ -87,7 +99,10 @@ export const cabBookingMutation = {
       });
 
       return {
-        flag: true,
+        bookingId: response.bookingData.id,
+        booking: {
+          ...response.bookingData
+        },
         message: `Your booking has been requested!,
                  Please wait util confirmation`
       };

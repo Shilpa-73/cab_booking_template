@@ -5,6 +5,7 @@ import { defaultArgs, resolver } from 'graphql-sequelize';
 import { getNode } from '@gql/node';
 import { Customer, customerQueries } from '@gql/models/customers';
 import { driverQueries } from '@gql/models/drivers';
+import { vehicleQueries } from '@gql/models/vehicles';
 import { vehicleCategoryQueries } from '@gql/models/vehicleCategories';
 import { vehicleSubCategoryQueries } from '@gql/models/vehicleSubCategories';
 import { bookingQueries } from '@gql/models/bookings';
@@ -17,6 +18,7 @@ const { nodeField, nodeTypeMapper } = getNode();
 const DB_TABLES = {
   customer: customerQueries,
   driver: driverQueries,
+  vehicle: vehicleQueries,
   vehicleCategory: vehicleCategoryQueries,
   vehicleSubCategory: vehicleSubCategoryQueries,
   booking: bookingQueries

@@ -3,6 +3,7 @@ import { createConnection } from 'graphql-sequelize';
 import { getNode } from '@gql/node';
 import db from '@database/models';
 import { bookingQueries } from './bookings';
+import { timestamps } from './timestamps';
 
 const { nodeInterface } = getNode();
 export const driverFields = {
@@ -24,6 +25,7 @@ export const Driver = new GraphQLObjectType({
   interfaces: [nodeInterface],
   fields: () => ({
     ...driverFields,
+    ...timestamps,
     bookings: {
       ...bookingQueries.list,
       resolve: (source, args, context, info) =>

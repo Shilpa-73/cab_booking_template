@@ -2,15 +2,20 @@ import { GraphQLInt, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 import upperFirst from 'lodash/upperFirst';
 import { deletedId, deleteUsingId, updateUsingId } from '@database/dbUtils';
 import { customerMutations } from '@gql/models/customers';
-import { loginMutation } from '@gql/customMutations/authLogin';
+import { loginMutation, driverLoginMutation } from '@gql/customMutations/authLogin';
 import camelCase from 'lodash/camelCase';
-import { signupMutations } from './customMutations/signup';
-import { cabBookingMutation } from './customMutations/bookCab';
+import { signupMutations } from '@gql/customMutations/signup';
+import { cabBookingMutation } from '@gql/customMutations/bookCab';
+import { confirmBookingMutation } from '@gql/customMutations/confirmBookingRequest';
+import { completeBookingMutation } from '@gql/customMutations/completeBookingRequest';
 
 const CUSTOMS = {
   login: loginMutation,
+  driverLogin: driverLoginMutation,
   signup: signupMutations,
-  bookCab: cabBookingMutation
+  bookCab: cabBookingMutation,
+  confirmBookingRequest: confirmBookingMutation,
+  completeBooking: completeBookingMutation
 };
 
 export const createResolvers = (model) => ({

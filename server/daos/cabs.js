@@ -1,7 +1,8 @@
-import { convertDbResponseToRawResponse, mapKeysToCamelCase } from '../database/dbUtils';
-import { tables } from '../utils/constants';
+import { convertDbResponseToRawResponse, mapKeysToCamelCase } from '@database/dbUtils';
+import { tables } from '@utils/constants';
 import db from '@database/models';
 import { Op } from 'sequelize';
+import moment from 'moment';
 
 // Check the requested cab is available to book or not!
 export const checkCabAvailability = async (cabId) => {
@@ -13,8 +14,8 @@ export const checkCabAvailability = async (cabId) => {
       vehicleId: cabId,
       endTime: null,
       createdAt: {
-        [Op.gt]: new Date().setHours(0, 0, 0, 0),
-        [Op.lt]: new Date()
+        [Op.gt]: moment(moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
+        [Op.lt]: moment()
       }
     },
     raw: true
@@ -33,8 +34,8 @@ export const getNearestAvailableCabs = async ({ lat, long }) => {
       status: 'CAB_ASSIGNED',
       endTime: null,
       createdAt: {
-        [Op.gt]: new Date().setHours(0, 0, 0, 0),
-        [Op.lt]: new Date()
+        [Op.gt]: moment(moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
+        [Op.lt]: moment()
       }
     }
   });
@@ -47,7 +48,7 @@ export const getNearestAvailableCabs = async ({ lat, long }) => {
                                        ${lat}, ${long},
                                        addr.lat, addr.long
                                    )
-                           )       as disDiff
+                           )       as distance_diff
             `;
   const sqlQuery = `
                 with distanceDiff as (
@@ -61,7 +62,7 @@ export const getNearestAvailableCabs = async ({ lat, long }) => {
                     inner join ${tables.vehicleSubCategories} vs on vs.id = vh.vehicle_sub_category_id
                     where addr.type = 'VEHICLE'
                     AND NOT (vh.id=ANY('{${bookedCabIds.join(',')}}'))
-                    order by disDiff ASC
+                    order by distance_diff ASC
                     limit 20
                     )
                 select * from distanceDiff;
@@ -95,9 +96,7 @@ export const getCabById = async (cabId) =>
 export const bookCabs = async ({ cabId, ...rest }) => {
   const response = {};
   try {
-    response.bookignData = await db.bookings.create({
-      ...rest
-    });
+    response.bookingData = await db.bookings.create(rest).then((d) => d.toJSON());
 
     return Promise.resolve(response);
   } catch (e) {

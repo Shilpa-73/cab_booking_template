@@ -4,6 +4,7 @@ CREATE TABLE vehicles
     vehicle_number CHARACTER  VARYING(20) NOT NULL,
     vehicle_category_id  INTEGER NOT NULL,
     vehicle_sub_category_id  INTEGER NOT NULL,
+    owner_id INTEGER NOT NULL,
     amount float8 NOT NULL,
     model_no text NOT NULL,
     brand_name text NOT NULL,
@@ -21,3 +22,6 @@ CREATE TABLE vehicles
         (vehicle_sub_category_id) REFERENCES vehicle_sub_categories
 );
 
+
+CREATE UNIQUE INDEX vehicles_vehicle_number
+ON vehicles(vehicle_number);

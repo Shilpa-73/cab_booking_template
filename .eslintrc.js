@@ -6,8 +6,8 @@ const prettierOptions = JSON.parse(fs.readFileSync(path.resolve(__dirname, '.pre
 module.exports = {
   parser: 'babel-eslint',
   extends: ['prettier-standard'],
-  ignorePatterns: ['temp.js', '**/dist/*.js', 'node_modules', '.idea', '.git'],
   plugins: ['prettier'],
+  ignorePatterns: ['temp.js', '**/dist/*.js', 'node_modules', '.idea', '.git'],
   env: {
     jest: true,
     browser: true,

@@ -1,5 +1,8 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLList } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLList, GraphQLFloat } from 'graphql';
 import { getPastBookingDetailsOfCustomer } from '@daos/bookings';
+import { USER_TYPE } from '@utils/constants';
+import { GraphQLDateTime } from 'graphql-iso-date/dist';
+import { timestamps, times } from '@gql/models/timestamps';
 
 const pastBookingResponseFields = new GraphQLObjectType({
   name: 'pastBookingResponseFields',
@@ -19,21 +22,25 @@ const pastBookingResponseFields = new GraphQLObjectType({
     subCategory: {
       type: GraphQLString
     },
-    startTime: {
-      type: GraphQLString
+    pickupLat: {
+      type: GraphQLNonNull(GraphQLFloat)
     },
-    endTime: {
-      type: GraphQLString
-    }
+    pickupLong: {
+      type: GraphQLNonNull(GraphQLFloat)
+    },
+    destinationLat: {
+      type: GraphQLNonNull(GraphQLFloat)
+    },
+    destinationLong: {
+      type: GraphQLNonNull(GraphQLFloat)
+    },
+    ...times,
+    ...timestamps
   })
 });
 
 // This is response fields of the past bookings queries
 export const pastBookingFields = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'This field state that the customer signup is done perfectly or not!'
-  },
   data: {
     type: GraphQLList(pastBookingResponseFields)
   }
@@ -46,8 +53,12 @@ export const bookingListArgs = {
     description: 'status for the customer booking, show that the booking is confirmed or NA'
   },
   startDate: {
-    type: GraphQLString,
-    description: 'date for the customer want to fetch the record!'
+    type: GraphQLDateTime,
+    description: 'start date for the customer want to fetch the record!'
+  },
+  endDate: {
+    type: GraphQLDateTime,
+    description: 'end date for the customer want to fetch the record!'
   }
 };
 
@@ -63,15 +74,16 @@ export const pastBookingQueries = {
   args: {
     ...bookingListArgs
   },
-  async resolve(source, { ...rest }, context, info) {
+  async resolve(source, { ...rest }, { user, isAuthenticatedUser }, info) {
     try {
+      await isAuthenticatedUser({ user, type: USER_TYPE.CUSTOMER });
+
       const allBookings = await getPastBookingDetailsOfCustomer({
-        customerId: 51, // Todo to remove later static customer-id!
+        customerId: user.userId || 51, // Todo to remove later static customer-id!
         ...rest
       });
 
       return {
-        flag: true,
         data: allBookings
       };
     } catch (e) {

@@ -1,36 +1,24 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString } from 'graphql';
 import db from '@database/models';
-
-const userFields = new GraphQLObjectType({
-  name: 'userFields',
-  fields: () => ({
-    id: {
-      type: GraphQLNonNull(GraphQLInt)
-    },
-    firstName: {
-      type: GraphQLNonNull(GraphQLString)
-    },
-    lastName: {
-      type: GraphQLNonNull(GraphQLString)
-    }
-  })
-});
+import { findOneById } from '@database/dbUtils';
 
 // This is response fields of the nearest vehicle queries
-export const loginUserDetail = {
-  flag: {
-    type: GraphQLNonNull(GraphQLBoolean),
-    description: 'This field state that the customer signup is done perfectly or not!'
+export const loginUserField = {
+  id: {
+    type: GraphQLNonNull(GraphQLInt)
   },
-  data: {
-    type: userFields
+  firstName: {
+    type: GraphQLNonNull(GraphQLString)
+  },
+  lastName: {
+    type: GraphQLNonNull(GraphQLString)
   }
 };
 
 export const isLoggedinResponse = new GraphQLObjectType({
   name: 'isLoggedinResponse',
   fields: () => ({
-    ...loginUserDetail
+    ...loginUserField
   })
 });
 
@@ -39,17 +27,15 @@ export const isLoggedinQuery = {
   args: {},
   async resolve(source, args, { user }, info) {
     try {
-      const { Customers } = db;
-
-      console.log(`context user data is here!`, user);
-
       // make sure user is logged in
       if (!user) {
         throw new Error('You are not authenticated!');
       }
 
       // user is authenticated
-      return await Customers.findById(user.id);
+      const userData = await findOneById(db.customers, user.userId);
+      if (!userData) throw new Error('The requested account is no more exist!');
+      return userData;
     } catch (e) {
       throw Error(`Internal Error: ${e}`);
     }

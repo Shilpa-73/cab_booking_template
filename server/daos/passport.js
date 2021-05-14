@@ -1,4 +1,4 @@
-import { convertDbResponseToRawResponse } from '../database/dbUtils';
+import { convertDbResponseToRawResponse } from '@database/dbUtils';
 import db from '@database/models';
 
 // Return customer/driver passport detail by their id

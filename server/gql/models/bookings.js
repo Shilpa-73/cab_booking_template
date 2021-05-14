@@ -5,6 +5,7 @@ import { customerQueries } from './customers';
 // import { customerQueries } from './vehicles';
 import { getNode } from '@gql/node';
 import db from '@database/models';
+import { times, timestamps } from './timestamps';
 
 const { nodeInterface } = getNode();
 export const BookingFields = {
@@ -13,9 +14,7 @@ export const BookingFields = {
   destinationAddress: { type: GraphQLString, sqlColumn: 'destination_address' },
   pickupAddress: { type: GraphQLString, sqlColumn: 'pickup_address' },
   status: { type: GraphQLString },
-  vehicleId: { type: GraphQLInt, sqlColumn: 'vehicle_id' },
-  startTime: { type: GraphQLString, sqlColumn: 'start_time' },
-  endTime: { type: GraphQLString, sqlColumn: 'end_time' }
+  vehicleId: { type: GraphQLInt, sqlColumn: 'vehicle_id' }
 };
 
 // Booking
@@ -24,6 +23,8 @@ export const Booking = new GraphQLObjectType({
   interfaces: [nodeInterface],
   fields: () => ({
     ...BookingFields,
+    ...times,
+    ...timestamps,
     drivers: {
       ...driverQueries.list,
       resolve: (source, args, context, info) =>

@@ -1,9 +1,10 @@
-import { convertDbResponseToRawResponse, transformDbArrayResponseToRawResponse } from '../database/dbUtils';
-import { BOOKING_STATUS } from '../utils/constants';
+import { convertDbResponseToRawResponse, transformDbArrayResponseToRawResponse } from '@database/dbUtils';
+import { BOOKING_STATUS } from '@utils/constants';
 import db from '@database/models';
 import { Op } from 'sequelize';
+import moment from 'moment';
 
-export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, status = [] }) => {
+export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, endDate, status = [] }) => {
   const where = {
     status: { [Op.in]: [BOOKING_STATUS.CONFIRMED] }
   };
@@ -18,8 +19,8 @@ export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, s
 
   if (startDate) {
     where.createdAt = {
-      [Op.gt]: new Date().setHours(0, 0, 0, 0),
-      [Op.lt]: new Date()
+      [Op.gt]: moment(moment(startDate).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })),
+      [Op.lt]: endDate ? moment(moment(endDate).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })) : moment()
     };
   }
 
@@ -31,8 +32,13 @@ export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, s
       include: [
         {
           model: db.vehicles,
-          attributes: ['id', 'vehicleNumber', 'modelNo'],
+          attributes: ['vehicleNumber', 'modelNo'],
           as: 'vehicle'
+        },
+        {
+          model: db.drivers,
+          attributes: ['firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
+          as: 'driver'
         }
       ]
     })
@@ -49,17 +55,17 @@ export const getBookingById = async (bookingId) =>
       include: [
         {
           model: db.vehicles,
-          attributes: ['id', 'vehicleNumber', 'modelNo'],
+          attributes: ['vehicleNumber', 'modelNo'],
           as: 'vehicle'
         },
         {
           model: db.customers,
-          attributes: ['id', 'firstName', 'lastName', 'mobileNo', 'email'],
+          attributes: ['firstName', 'lastName', 'mobileNo', 'email'],
           as: 'customer'
         },
         {
           model: db.drivers,
-          attributes: ['id', 'firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
+          attributes: ['firstName', 'lastName', 'mobileNo', 'email', 'drivingLicenseNumber'],
           as: 'driver'
         }
       ]

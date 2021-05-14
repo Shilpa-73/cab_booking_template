@@ -3,6 +3,7 @@ import { camelCase, isArray, isObject } from 'lodash';
 import { Op } from 'sequelize';
 import deepMapKeys from 'deep-map-keys';
 import mapKeysDeep from 'map-keys-deep';
+import { isDate } from 'moment';
 
 export const updateUsingId = async (model, args) => {
   let affectedRows;
@@ -14,12 +15,32 @@ export const updateUsingId = async (model, args) => {
       }
     });
   } catch (e) {
+    console.log(`e update error`, e.message);
     throw new Error(`Failed to update ${model.name}`);
   }
   if (!affectedRows) {
     throw new Error('Data not found');
   }
   return model.findOne({ where: { id: args.id } });
+};
+
+export const upsertUsingCriteria = async (model, args, criteria) => {
+  let affectedRows;
+  try {
+    [affectedRows] = await model.update(args, {
+      where: {
+        ...criteria,
+        deletedAt: null
+      }
+    });
+  } catch (e) {
+    throw new Error(`Failed to update ${model.name}`);
+  }
+  if (!affectedRows) {
+    // create a new record
+    await model.create({ ...args }).then((d) => d.toJSON());
+  }
+  return model.findOne({ where: criteria });
 };
 
 export const deleteUsingId = async (model, args) => {
@@ -40,9 +61,9 @@ export const deletedId = new GraphQLObjectType({
   fields: () => ({ id: { type: GraphQLNonNull(GraphQLInt) } })
 });
 
-export const findOneById = async (model, args) => {
+export const findOneById = async (model, id) => {
   try {
-    const data = await model.findOne({ where: { id: args.id }, raw: true });
+    const data = await model.findOne({ where: { id }, raw: true });
     return data;
   } catch (e) {
     throw new Error(e.message);
@@ -80,7 +101,7 @@ export const sequelizedWhere = (currentWhere = {}, where = {}) => {
 export const removeDBReferenceKeyFromResponse = (dbResponse) => {
   let convertedObject = {};
   for (const [key, value] of Object.entries(dbResponse)) {
-    if (typeof value === 'object' && isObject(value)) {
+    if (typeof value === 'object' && isObject(value) && !isDate(value)) {
       convertedObject = Object.assign({}, convertedObject, removeDBReferenceKeyFromResponse(value));
     } else {
       const allKeys = key.split('.');
@@ -95,7 +116,6 @@ export const convertDbResponseToRawResponse = (dbResponse) => {
     return removeDBReferenceKeyFromResponse(
       dbResponse.get({
         plain: true,
-        nest: false,
         raw: true
       })
     );
@@ -112,3 +132,12 @@ export const transformDbArrayResponseToRawResponse = (arr) => {
 
 export const mapKeysToCamelCase = (arr) =>
   arr.map((resource) => mapKeysDeep(removeDBReferenceKeyFromResponse(resource), (keys) => camelCase(keys)));
+
+// This will return the difference in miles!
+export const distanceDiff = (lat1, lon1, lat2, lon2) => {
+  const x = 69.1 * (lat2 - lat1);
+  const y = 69.1 * (lon2 - lon1) * Math.cos(lat1 / 57.3);
+
+  const km = Math.sqrt(x * x + y * y) * 1.60934;
+  return Math.round(km);
+};
