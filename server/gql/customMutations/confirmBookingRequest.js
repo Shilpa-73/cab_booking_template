@@ -1,12 +1,12 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLFloat } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
-import { getBookingById } from '../../daos/bookings';
-import { distanceDiff, updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
+import { getBookingById } from '@daos/bookings';
+import { distanceDiff, updateUsingId, upsertUsingCriteria } from '@database/dbUtils';
 import db from '@database/models';
-import { ADDRESS_TYPE, BOOKING_STATUS, USER_TYPE } from '../../utils/constants';
+import { ADDRESS_TYPE, BOOKING_STATUS, USER_TYPE } from '@utils/constants';
 import moment from 'moment';
 
-import { times } from '../models/timestamps';
+import { times } from '@gql/models/timestamps';
 
 // This is response fields of the query
 export const confirmBookingFields = {

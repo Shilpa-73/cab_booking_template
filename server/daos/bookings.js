@@ -1,5 +1,5 @@
-import { convertDbResponseToRawResponse, transformDbArrayResponseToRawResponse } from '../database/dbUtils';
-import { BOOKING_STATUS } from '../utils/constants';
+import { convertDbResponseToRawResponse, transformDbArrayResponseToRawResponse } from '@database/dbUtils';
+import { BOOKING_STATUS } from '@utils/constants';
 import db from '@database/models';
 import { Op } from 'sequelize';
 import moment from 'moment';

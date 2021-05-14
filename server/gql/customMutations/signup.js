@@ -1,8 +1,8 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString } from 'graphql';
 import db from '@database/models';
 import { generatePassword } from '@database/bcrypt';
-import { findOneByCriteria, insertRecord } from '../../database/dbUtils';
-import { USER_TYPE } from '../../utils/constants';
+import { findOneByCriteria, insertRecord } from '@database/dbUtils';
+import { USER_TYPE } from '@utils/constants';
 
 // This is response fields of the signup response
 export const signupUserFields = {

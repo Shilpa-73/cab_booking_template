@@ -1,5 +1,5 @@
 import jwt from 'express-jwt';
-import { USER_TYPE } from '../utils/constants';
+import { USER_TYPE } from '@utils/constants';
 
 // Todo to remove this later!
 export const useDummyToken = (req, res, next) => {

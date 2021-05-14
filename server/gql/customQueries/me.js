@@ -1,6 +1,6 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString } from 'graphql';
 import db from '@database/models';
-import { findOneById } from '../../database/dbUtils';
+import { findOneById } from '@database/dbUtils';
 
 // This is response fields of the nearest vehicle queries
 export const loginUserField = {

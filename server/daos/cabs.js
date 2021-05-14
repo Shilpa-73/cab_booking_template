@@ -1,5 +1,5 @@
-import { convertDbResponseToRawResponse, mapKeysToCamelCase } from '../database/dbUtils';
-import { tables } from '../utils/constants';
+import { convertDbResponseToRawResponse, mapKeysToCamelCase } from '@database/dbUtils';
+import { tables } from '@utils/constants';
 import db from '@database/models';
 import { Op } from 'sequelize';
 import moment from 'moment';

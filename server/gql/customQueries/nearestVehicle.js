@@ -1,6 +1,6 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLList, GraphQLFloat } from 'graphql';
 import { getNearestAvailableCabs } from '@daos/cabs';
-import { USER_TYPE } from '../../utils/constants';
+import { USER_TYPE } from '@utils/constants';
 
 const vehicleResponse = new GraphQLObjectType({
   name: 'vehicleResponse',

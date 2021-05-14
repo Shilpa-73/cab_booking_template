@@ -1,5 +1,5 @@
-import { convertDbResponseToRawResponse } from '../database/dbUtils';
-import { USER_TYPE } from '../utils/constants';
+import { convertDbResponseToRawResponse } from '@database/dbUtils';
+import { USER_TYPE } from '@utils/constants';
 import db from '@database/models';
 
 // Return cab detail by their id

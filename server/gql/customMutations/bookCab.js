@@ -1,6 +1,6 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLFloat } from 'graphql';
-import { bookCabs, checkCabAvailability, getCabById } from '../../daos/cabs';
-import { USER_TYPE } from '../../utils/constants';
+import { bookCabs, checkCabAvailability, getCabById } from '@daos/cabs';
+import { USER_TYPE } from '@utils/constants';
 import { confirmBookingFields } from './confirmBookingRequest';
 
 // This is response fields of the query

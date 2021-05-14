@@ -1,8 +1,8 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLList, GraphQLFloat } from 'graphql';
 import { getPastBookingDetailsOfCustomer } from '@daos/bookings';
-import { USER_TYPE } from '../../utils/constants';
+import { USER_TYPE } from '@utils/constants';
 import { GraphQLDateTime } from 'graphql-iso-date/dist';
-import { timestamps, times } from '../models/timestamps';
+import { timestamps, times } from '@gql/models/timestamps';
 
 const pastBookingResponseFields = new GraphQLObjectType({
   name: 'pastBookingResponseFields',

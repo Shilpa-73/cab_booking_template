@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { comparePassword } from '@database/bcrypt';
 import { findOneByCriteria, insertRecord } from '@database/dbUtils';
-import { USER_TYPE } from '../../utils/constants';
+import { USER_TYPE } from '@utils/constants';
 
 // This is response fields of the query
 export const loginUserFields = {

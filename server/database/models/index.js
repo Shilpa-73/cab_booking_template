@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import dotenv from 'dotenv';
-import { getClient } from '../index';
+import { getClient } from '@database/index';
 
 export const db = {};
 
