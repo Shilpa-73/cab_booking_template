@@ -4,10 +4,13 @@ import pluralize from 'pluralize';
 import { defaultArgs, resolver } from 'graphql-sequelize';
 import { getNode } from '@gql/node';
 import { Customer, customerQueries } from '@gql/models/customers';
-import { Driver, driverQueries } from '@gql/models/drivers';
-import { VehicleCategory, vehicleCategoryQueries } from '@gql/models/vehicleCategories';
-import { VehicleSubCategory, vehicleSubCategoryQueries } from '@gql/models/vehicleSubCategories';
+import { driverQueries } from '@gql/models/drivers';
+import { vehicleCategoryQueries } from '@gql/models/vehicleCategories';
+import { vehicleSubCategoryQueries } from '@gql/models/vehicleSubCategories';
 import { bookingQueries } from '@gql/models/bookings';
+import { nearestVehicleQueries } from '@gql/customQueries/nearestVehicle';
+import { isLoggedinQuery } from '@gql/customQueries/me';
+import { pastBookingQueries } from '@gql/customQueries/pastBookings';
 
 const { nodeField, nodeTypeMapper } = getNode();
 
@@ -16,19 +19,20 @@ const DB_TABLES = {
   driver: driverQueries,
   vehicleCategory: vehicleCategoryQueries,
   vehicleSubCategory: vehicleSubCategoryQueries,
-  booking:bookingQueries
+  booking: bookingQueries
 };
 
 const CUSTOMS = {
-
+  nearestCabs: nearestVehicleQueries,
+  pastBookings: pastBookingQueries,
+  me: isLoggedinQuery
 };
 
-
-console.log(`VehicleCategoryQueries is `, vehicleCategoryQueries.query)
+console.log(`VehicleCategoryQueries is `, vehicleCategoryQueries.query);
 
 export const addQueries = () => {
   const query = {};
-  Object.keys(DB_TABLES).forEach(table => {
+  Object.keys(DB_TABLES).forEach((table) => {
     query[camelCase(table)] = {
       ...DB_TABLES[table].query,
       resolve: resolver(DB_TABLES[table].model),
@@ -44,7 +48,7 @@ export const addQueries = () => {
   });
 
   // adding Queries from CUSTOMS (those which have custom resolvers)
-  Object.keys(CUSTOMS).forEach(que => {
+  Object.keys(CUSTOMS).forEach((que) => {
     query[camelCase(que)] = {
       ...CUSTOMS[que]
     };

@@ -6,73 +6,71 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    user_type: {
-      type: DataTypes.ENUM("CUSTOMER","DRIVER"),
+    userType: {
+      field: 'user_type',
+      type: DataTypes.ENUM('CUSTOMER', 'DRIVER'),
       allowNull: false,
-      defaultValue: "CUSTOMER"
+      defaultValue: 'CUSTOMER'
     },
-    provider_type: {
-      type: DataTypes.ENUM("GOOGLE","GITHUB","LOCAL"),
+    providerType: {
+      field: 'provider_type',
+      type: DataTypes.ENUM('GOOGLE', 'GITHUB', 'LOCAL'),
       allowNull: false,
-      defaultValue: "GOOGLE"
+      defaultValue: 'GOOGLE'
     },
     password: {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    service_provider_id: {
+    serviceProviderId: {
+      field: 'service_provider_id',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    user_id: {
+    userId: {
+      field: 'user_id',
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    created_at: {
+    createdAt: {
+      field: 'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field: 'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field: 'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }
   };
-};
+}
 
-export function model(sequelize, DataTypes){
+export function model(sequelize, DataTypes) {
   const passport = sequelize.define('passport', getAttributes(sequelize, DataTypes), {
     tableName: 'passport',
     paranoid: true,
-    underscored:true,
+    underscored: true,
     timestamps: true,
     indexes: [
       {
-        name: "passport_pkey",
+        name: 'passport_pkey',
         unique: true,
-        fields: [
-          { name: "id" },
-        ]
+        fields: [{ name: 'id' }]
       },
       {
-        name: "passport_user_type",
+        name: 'passport_user_type',
         unique: true,
-        fields: [
-          { name: "user_type" },
-          { name: "user_id" },
-          { name: "provider_type" },
-        ]
-      },
+        fields: [{ name: 'user_type' }, { name: 'user_id' }, { name: 'provider_type' }]
+      }
     ]
   });
 
-  passport.associate = function(models) {
-
-  };
+  passport.associate = function (models) {};
   return passport;
 }
-

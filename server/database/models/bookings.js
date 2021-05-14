@@ -6,45 +6,54 @@ export function getAttributes(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    booking_type: {
-      type: DataTypes.ENUM("DAILY_RIDE","OUTSTATION","RENTAL"),
+    bookingType: {
+      field: 'booking_type',
+      type: DataTypes.ENUM('DAILY_RIDE', 'OUTSTATION', 'RENTAL'),
       allowNull: false,
-      defaultValue: "DAILY_RIDE"
+      defaultValue: 'DAILY_RIDE'
     },
-    source_address: {
+    sourceAddress: {
+      field: 'source_address',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    destination_address: {
+    destinationAddress: {
+      field: 'destination_address',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    pickup_address: {
+    pickupAddress: {
+      field: 'pickup_address',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    pickup_lat: {
+    pickupLat: {
+      field: 'pickup_lat',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    pickup_long: {
+    pickupLong: {
+      field: 'pickup_long',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    destination_lat: {
+    destinationLat: {
+      field: 'destination_lat',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    destination_long: {
+    destinationLong: {
+      field: 'destination_long',
       type: DataTypes.DOUBLE,
       allowNull: false
     },
     status: {
-      type: DataTypes.ENUM("REQUESTED","CONFIRMED","NOT_AVAILABLE"),
+      type: DataTypes.ENUM('REQUESTED', 'CAB_ASSIGNED', 'CONFIRMED', 'NOT_AVAILABLE'),
       allowNull: false,
-      defaultValue: "REQUESTED"
+      defaultValue: 'REQUESTED'
     },
-    customer_id: {
+    customerId: {
+      field: 'customer_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -52,7 +61,8 @@ export function getAttributes(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    driver_id: {
+    driverId: {
+      field: 'driver_id',
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
@@ -60,7 +70,8 @@ export function getAttributes(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    confirmed_by: {
+    confirmedBy: {
+      field: 'confirmed_by',
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
@@ -68,7 +79,8 @@ export function getAttributes(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    vehicle_id: {
+    vehicleId: {
+      field: 'vehicle_id',
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -80,73 +92,69 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    start_time: {
+    startTime: {
+      field: 'start_time',
       type: DataTypes.TIME,
       allowNull: true
     },
-    end_time: {
+    endTime: {
+      field: 'end_time',
       type: DataTypes.TIME,
       allowNull: true
     },
-    created_at: {
+    createdAt: {
+      field: 'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field: 'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field: 'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }
-  }
-};
+  };
+}
 
-export function model(sequelize, DataTypes){
+export function model(sequelize, DataTypes) {
   const bookings = sequelize.define('bookings', getAttributes(sequelize, DataTypes), {
     tableName: 'bookings',
     paranoid: true,
-    underscored:true,
+    underscored: true,
     timestamps: true,
     indexes: [
       {
-        name: "bookings_customer_id",
-        fields: [
-          { name: "customer_id" },
-        ]
+        name: 'bookings_customer_id',
+        fields: [{ name: 'customer_id' }]
       },
       {
-        name: "bookings_driver_id",
-        fields: [
-          { name: "driver_id" },
-        ]
+        name: 'bookings_driver_id',
+        fields: [{ name: 'driver_id' }]
       },
       {
-        name: "bookings_pkey",
+        name: 'bookings_pkey',
         unique: true,
-        fields: [
-          { name: "id" },
-        ]
+        fields: [{ name: 'id' }]
       },
       {
-        name: "bookings_vehicle_id",
-        fields: [
-          { name: "vehicle_id" },
-        ]
-      },
+        name: 'bookings_vehicle_id',
+        fields: [{ name: 'vehicle_id' }]
+      }
     ]
   });
 
-  bookings.associate = function(models) {
+  bookings.associate = function (models) {
+    bookings.belongsTo(models.admin, { as: 'confirmed_by_admin', foreignKey: 'confirmed_by' });
+    bookings.hasMany(models.payments, { as: 'payments', foreignKey: 'booking_id' });
 
-    bookings.belongsTo(models.admin, { as: "confirmed_by_admin", foreignKey: "confirmed_by"});
-    bookings.hasMany(models.payments, { as: "payments", foreignKey: "booking_id"});
-
-    bookings.belongsTo(models.vehicles, { as: "vehicle", foreignKey: "vehicle_id"});
-    bookings.belongsTo(models.drivers, { as: "driver", foreignKey: "driver_id"});
-    bookings.belongsTo(models.customers, { as: "customer", foreignKey: "customer_id"});
+    bookings.belongsTo(models.vehicles, { as: 'vehicle', foreignKey: 'vehicle_id' });
+    bookings.belongsTo(models.drivers, { as: 'driver', foreignKey: 'driver_id' });
+    bookings.belongsTo(models.customers, { as: 'customer', foreignKey: 'customer_id' });
   };
   return bookings;
 }

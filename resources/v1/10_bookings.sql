@@ -2,7 +2,7 @@ create type booking_types
     as enum('DAILY_RIDE','OUTSTATION','RENTAL');
 
 create type booking_status_types
-    as enum('REQUESTED','CONFIRMED','NOT_AVAILABLE');
+    as enum('REQUESTED','CAB_ASSIGNED','CONFIRMED','NOT_AVAILABLE');
 
 
 CREATE TABLE bookings (

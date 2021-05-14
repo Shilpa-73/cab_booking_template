@@ -34,49 +34,47 @@ export function getAttributes(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    created_at: {
+    createdAt: {
+      field: 'created_at',
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.fn('now')
     },
-    updated_at: {
+    updatedAt: {
+      field: 'updated_at',
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
+    deletedAt: {
+      field: 'deleted_at',
       type: DataTypes.DATE,
       allowNull: true
     }
-  }
-};
+  };
+}
 
-export function model(sequelize, DataTypes){
+export function model(sequelize, DataTypes) {
   const cabStations = sequelize.define('cab_stations', getAttributes(sequelize, DataTypes), {
     tableName: 'cab_stations',
     paranoid: true,
     timestamps: true,
-    underscored:true,
+    underscored: true,
     indexes: [
       {
-        name: "address_pkey",
+        name: 'address_pkey',
         unique: true,
-        fields: [
-          { name: "id" },
-        ]
+        fields: [{ name: 'id' }]
       },
       {
-        name: "adress_type_item_id",
+        name: 'adress_type_item_id',
         unique: true,
-        fields: [
-          { name: "type" },
-          { name: "item_id" },
-        ]
-      },
+        fields: [{ name: 'type' }, { name: 'item_id' }]
+      }
     ]
   });
 
-  cabStations.associate = function(models) {
-    cabStations.hasMany(models.admin, { as: "admins", foreignKey: "cab_station_id"});
+  cabStations.associate = function (models) {
+    cabStations.hasMany(models.admin, { as: 'admins', foreignKey: 'cab_station_id' });
   };
   return cabStations;
 }

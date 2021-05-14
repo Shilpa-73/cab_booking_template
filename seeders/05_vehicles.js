@@ -1,5 +1,5 @@
 module.exports = {
-  up: queryInterface => {
+  up: (queryInterface) => {
     const faker = require('faker');
     const range = require('lodash/range');
 
@@ -22,13 +22,10 @@ module.exports = {
         min: 4,
         max: 7
       })}`,
-      manufacturing_year: faker.date
-        .past()
-        .toString()
-        .substr('1', '4'),
+      manufacturing_year: faker.date.past().toString().substr('1', '4'),
       active: true
     }));
     return queryInterface.bulkInsert('vehicles', arr, {});
   },
-  down: queryInterface => queryInterface.bulkDelete('vehicles', null, {})
+  down: (queryInterface) => queryInterface.bulkDelete('vehicles', null, {})
 };

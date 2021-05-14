@@ -1,4 +1,9 @@
 import { GraphQLNonNull, GraphQLInt, GraphQLObjectType } from 'graphql';
+import { camelCase, isArray, isObject } from 'lodash';
+import { Op } from 'sequelize';
+import deepMapKeys from 'deep-map-keys';
+import mapKeysDeep from 'map-keys-deep';
+
 export const updateUsingId = async (model, args) => {
   let affectedRows;
   try {
@@ -34,3 +39,76 @@ export const deletedId = new GraphQLObjectType({
   name: 'Id',
   fields: () => ({ id: { type: GraphQLNonNull(GraphQLInt) } })
 });
+
+export const findOneById = async (model, args) => {
+  try {
+    const data = await model.findOne({ where: { id: args.id }, raw: true });
+    return data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
+export const findOneByCriteria = async (model, args) => {
+  try {
+    const data = await model.findOne({ where: { ...args }, raw: true });
+    return data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
+export const insertRecord = async (model, args, returning = true) => {
+  try {
+    const data = await model.create({ ...args }).then((d) => d.toJSON());
+    return data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
+export const sequelizedWhere = (currentWhere = {}, where = {}) => {
+  where = deepMapKeys(where, (k) => {
+    if (Op[k]) {
+      return Op[k];
+    }
+    return k;
+  });
+  return { ...currentWhere, ...where };
+};
+
+export const removeDBReferenceKeyFromResponse = (dbResponse) => {
+  let convertedObject = {};
+  for (const [key, value] of Object.entries(dbResponse)) {
+    if (typeof value === 'object' && isObject(value)) {
+      convertedObject = Object.assign({}, convertedObject, removeDBReferenceKeyFromResponse(value));
+    } else {
+      const allKeys = key.split('.');
+      convertedObject[allKeys[allKeys.length - 1]] = value;
+    }
+  }
+  return convertedObject;
+};
+
+export const convertDbResponseToRawResponse = (dbResponse) => {
+  if (dbResponse) {
+    return removeDBReferenceKeyFromResponse(
+      dbResponse.get({
+        plain: true,
+        nest: false,
+        raw: true
+      })
+    );
+  }
+  return null;
+};
+export const transformDbArrayResponseToRawResponse = (arr) => {
+  if (!isArray(arr)) {
+    throw new Error('The required type should be an object(array)');
+  } else {
+    return arr.map((resource) => mapKeysDeep(convertDbResponseToRawResponse(resource), (keys) => camelCase(keys)));
+  }
+};
+
+export const mapKeysToCamelCase = (arr) =>
+  arr.map((resource) => mapKeysDeep(removeDBReferenceKeyFromResponse(resource), (keys) => camelCase(keys)));

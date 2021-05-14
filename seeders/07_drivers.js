@@ -1,5 +1,5 @@
 module.exports = {
-  up: queryInterface => {
+  up: (queryInterface) => {
     const faker = require('faker');
     const range = require('lodash/range');
 
@@ -36,5 +36,5 @@ module.exports = {
     }));
     return queryInterface.bulkInsert('drivers', arr, {});
   },
-  down: queryInterface => queryInterface.bulkDelete('drivers', null, {})
+  down: (queryInterface) => queryInterface.bulkDelete('drivers', null, {})
 };
