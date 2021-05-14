@@ -8,6 +8,10 @@ export const cabBookingFields = {
     type: GraphQLNonNull(GraphQLBoolean),
     description: 'The flag state the boolean value identify the booking is successful or not!'
   },
+  bookingId: {
+    type: GraphQLNonNull(GraphQLInt),
+    description: 'Booking Id to trace the booking request!'
+  },
   message: {
     type: GraphQLNonNull(GraphQLString),
     description: 'The text message will show up on front-end!'
@@ -76,7 +80,7 @@ export const cabBookingMutation = {
       const cabDetails = await getCabById(vehicleId);
 
       // Do entry in the booking table for booking request!
-      await bookCabs({
+      const response = await bookCabs({
         pickupLat,
         pickupLong,
         destinationLat,
@@ -91,6 +95,7 @@ export const cabBookingMutation = {
 
       return {
         flag: true,
+        bookingId: response.bookingData.id,
         message: `Your booking has been requested!,
                  Please wait util confirmation`
       };

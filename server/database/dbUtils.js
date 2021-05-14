@@ -14,6 +14,7 @@ export const updateUsingId = async (model, args) => {
       }
     });
   } catch (e) {
+    console.log(`e update error`, e.message);
     throw new Error(`Failed to update ${model.name}`);
   }
   if (!affectedRows) {
@@ -36,9 +37,9 @@ export const upsertUsingCriteria = async (model, args, criteria) => {
   }
   if (!affectedRows) {
     // create a new record
-    args.id = await model.create({ ...args });
+    await model.create({ ...args }).then((d) => d.toJSON());
   }
-  return model.findOne({ where: { id: args.id } });
+  return model.findOne({ where: criteria });
 };
 
 export const deleteUsingId = async (model, args) => {
@@ -114,7 +115,6 @@ export const convertDbResponseToRawResponse = (dbResponse) => {
     return removeDBReferenceKeyFromResponse(
       dbResponse.get({
         plain: true,
-        nest: false,
         raw: true
       })
     );

@@ -1,4 +1,5 @@
 import jwt from 'express-jwt';
+import { USER_TYPE } from '../utils/constants';
 
 // Todo to remove this later!
 export const useDummyToken = (req, res, next) => {
@@ -16,6 +17,9 @@ export const verifyJwt = () =>
 
 export const isAuthenticatedUser = async ({ user, type }) => {
   try {
+    // Todo to remove By pass for driver
+    if (user.userType === USER_TYPE.DRIVER) return Promise.resolve();
+
     if (user.userType !== type) throw new Error(`Only ${type} of user can access this query/mutation!`);
 
     return Promise.resolve();

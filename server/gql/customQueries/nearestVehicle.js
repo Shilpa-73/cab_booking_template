@@ -26,7 +26,8 @@ const vehicleResponse = new GraphQLObjectType({
       type: GraphQLString
     },
     distanceDiff: {
-      type: GraphQLNonNull(GraphQLFloat)
+      type: GraphQLNonNull(GraphQLFloat),
+      description: `This difference is in miles`
     }
   })
 });

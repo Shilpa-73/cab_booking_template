@@ -48,7 +48,7 @@ export const getNearestAvailableCabs = async ({ lat, long }) => {
                                        ${lat}, ${long},
                                        addr.lat, addr.long
                                    )
-                           )       as disDiff
+                           )       as distance_diff
             `;
   const sqlQuery = `
                 with distanceDiff as (
@@ -62,7 +62,7 @@ export const getNearestAvailableCabs = async ({ lat, long }) => {
                     inner join ${tables.vehicleSubCategories} vs on vs.id = vh.vehicle_sub_category_id
                     where addr.type = 'VEHICLE'
                     AND NOT (vh.id=ANY('{${bookedCabIds.join(',')}}'))
-                    order by disDiff ASC
+                    order by distance_diff ASC
                     limit 20
                     )
                 select * from distanceDiff;

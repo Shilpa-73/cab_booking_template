@@ -1,13 +1,13 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLBoolean, GraphQLFloat } from 'graphql';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { getBookingById } from '../../daos/bookings';
-import { updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
+import { insertRecord, updateUsingId, upsertUsingCriteria } from '../../database/dbUtils';
 import db from '@database/models';
 import { ADDRESS_TYPE, BOOKING_STATUS, USER_TYPE } from '../../utils/constants';
 import moment from 'moment';
 
 // This is response fields of the query
-export const confirmBookingFields = {
+export const completeBookingFields = {
   flag: {
     type: GraphQLNonNull(GraphQLBoolean),
     description: 'The flag state the boolean value identify the booking is successful or not!'
@@ -19,7 +19,7 @@ export const confirmBookingFields = {
 };
 
 // This is a query argument that will passed from the graphiql/front-end
-export const confirmBookingArgs = {
+export const completeBookingArgs = {
   bookingId: {
     type: GraphQLNonNull(GraphQLInt),
     description: 'id of booking request that driver wants to book!'
@@ -32,28 +32,28 @@ export const confirmBookingArgs = {
     type: GraphQLNonNull(GraphQLFloat),
     description: 'current long of driver'
   },
-  startTime: {
-    type: GraphQLDateTime
+  amount: {
+    type: GraphQLNonNull(GraphQLInt)
   },
   endTime: {
     type: GraphQLDateTime
   }
 };
 
-export const confirmBookingResponse = new GraphQLObjectType({
-  name: 'confirmBookingResponse',
+export const completeBookingResponse = new GraphQLObjectType({
+  name: 'completeBookingResponse',
   fields: () => ({
-    ...confirmBookingFields
+    ...completeBookingFields
   })
 });
 
-// First time driver confirm the request! & customer will receive the message for updates
-export const confirmBookingMutation = {
-  type: confirmBookingResponse,
+// After acceptance of the request , for the booking updation need to use this query
+export const completeBookingMutation = {
+  type: completeBookingResponse,
   args: {
-    ...confirmBookingArgs
+    ...completeBookingArgs
   },
-  async resolve(source, { bookingId, lat, long, startTime }, { user, isAuthenticatedUser }, info) {
+  async resolve(source, { bookingId, endTime, lat, long, amount }, { user, isAuthenticatedUser }, info) {
     try {
       await isAuthenticatedUser({ user, type: USER_TYPE.DRIVER });
 
@@ -61,27 +61,22 @@ export const confirmBookingMutation = {
       const bookingAvailable = await getBookingById(bookingId);
       if (!bookingAvailable) throw new Error(`The booking is not available!`);
 
-      if (bookingAvailable.status === BOOKING_STATUS.CAB_ASSIGNED)
-        throw new Error(`This booking request is already confirmed!`);
+      if (bookingAvailable.status === BOOKING_STATUS.CONFIRMED) throw new Error(`This booking is already completed!`);
 
       // Do entry in the booking table for booking request!
       await updateUsingId(db.bookings, {
         id: bookingId,
-        status: BOOKING_STATUS.CAB_ASSIGNED,
-        startTime: startTime ? moment(startTime).format('HH:mm:ss') : moment().format('HH:mm:ss'),
-        driverId: user.userId || 1 // Todo to remove later and use user.id from the context! after auth middleware implementation
+        endTime: endTime ? moment(endTime).format('HH:mm:ss') : moment().format('HH:mm:ss'),
+        status: BOOKING_STATUS.CONFIRMED
       });
 
-      // Todo set driver address and cab address lat/long to its related table!
       await Promise.all([
         new Promise((resolve, reject) => {
           upsertUsingCriteria(
             db.address,
             {
               lat,
-              long,
-              itemId: bookingAvailable.driverId,
-              type: ADDRESS_TYPE.DRIVER
+              long
             },
             {
               itemId: bookingAvailable.driverId,
@@ -95,9 +90,7 @@ export const confirmBookingMutation = {
             db.address,
             {
               lat,
-              long,
-              itemId: bookingAvailable.vehicleId,
-              type: ADDRESS_TYPE.VEHICLE
+              long
             },
             {
               itemId: bookingAvailable.vehicleId,
@@ -107,6 +100,14 @@ export const confirmBookingMutation = {
           resolve();
         })
       ]);
+
+      amount = amount || 100;
+
+      // Todo on a confirmation of booking , Do entry in a payments table!
+      await insertRecord(db.payments, {
+        bookingId: bookingAvailable.id,
+        payableAmount: amount
+      });
 
       return {
         flag: true,
