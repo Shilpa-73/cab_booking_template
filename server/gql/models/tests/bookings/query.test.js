@@ -32,8 +32,7 @@ describe('Vehicle graphQL-server-DB query tests', () => {
 
     await getResponse(vehicleQuery).then((response) => {
       expect(get(response, 'body.data.vehicle')).toBeTruthy();
-
-      console.log(`response  is here!`, response.body.data.vehicle);
+      console.log(`response  is here!`, response);
       done();
     });
   });

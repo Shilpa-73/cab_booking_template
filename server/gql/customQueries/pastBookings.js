@@ -79,9 +79,11 @@ export const pastBookingQueries = {
       await isAuthenticatedUser({ user, type: USER_TYPE.CUSTOMER });
 
       const allBookings = await getPastBookingDetailsOfCustomer({
-        customerId: user.userId || 51, // Todo to remove later static customer-id!
+        customerId: user.userId, // Todo to remove later static customer-id!
         ...rest
       });
+
+      console.log(`allBookings is here!`, allBookings);
 
       return {
         data: allBookings

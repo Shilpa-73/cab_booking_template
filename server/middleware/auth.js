@@ -1,10 +1,11 @@
 import jwt from 'express-jwt';
-import { USER_TYPE } from '../utils/constants';
+import { USER_TYPE } from '@utils/constants';
+import { isTestEnv } from '@utils';
 
 // Todo to remove this later!
 export const useDummyToken = (req, res, next) => {
   req.headers.authorization = `Bearer ${process.env.TEMP_TOKEN}`;
-  console.log(`process.env.TEMP_TOKEN is here`, process.env.TEMP_TOKEN);
+  // console.log(`process.env.TEMP_TOKEN is here`, process.env.TEMP_TOKEN);
   next();
 };
 
@@ -17,6 +18,8 @@ export const verifyJwt = () =>
 
 export const isAuthenticatedUser = async ({ user, type }) => {
   try {
+    if (isTestEnv()) return Promise.resolve();
+
     // Todo to remove By pass for driver
     if (user.userType === USER_TYPE.DRIVER) return Promise.resolve();
 

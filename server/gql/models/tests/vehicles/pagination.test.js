@@ -25,6 +25,7 @@ describe('Vehicles graphQL-server-DB pagination tests', () => {
 
   it('should have a query to get the vehicles', async (done) => {
     await getResponse(vehiclesQuery).then((response) => {
+      console.log(`response.body is `, response.body);
       const result = get(response, 'body.data.vehicles.edges[0].node');
       expect(result).toEqual(
         expect.objectContaining({
