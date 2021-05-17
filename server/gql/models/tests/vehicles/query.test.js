@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import { getResponse, mockDBClient, resetAndMockDB } from '@utils/testUtils';
-import { vehicleCategoriesTable, vehicleSubCategoriesTable } from '@utils/testUtils/mockData';
+import { vehicleCategoriesTable, vehicleSubCategoriesTable, vehiclesTable } from '@utils/testUtils/mockData';
 
 describe('Vehicle graphQL-server-DB query tests', () => {
   const id = 1;
@@ -20,7 +20,7 @@ describe('Vehicle graphQL-server-DB query tests', () => {
     }
   }
   `;
-  it('should request for vehicle categories and vehicle sub categories', async (done) => {
+  it('should request for vehicle with its category', async (done) => {
     const dbClient = mockDBClient();
     resetAndMockDB(null, {}, dbClient);
 
@@ -33,7 +33,21 @@ describe('Vehicle graphQL-server-DB query tests', () => {
     await getResponse(vehicleQuery).then((response) => {
       expect(get(response, 'body.data.vehicle')).toBeTruthy();
 
-      console.log(`response  is here!`, response.body.data.vehicle);
+      const vResult = get(response, 'body.data.vehicle');
+      expect(vResult).toEqual(
+        expect.objectContaining({
+          id: vehiclesTable[0].id,
+          vehicleNumber: vehiclesTable[0].vehicleNumber
+        })
+      );
+
+      const result = get(response, 'body.data.vehicle.vehicleCategory.edges[0].node');
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: vehicleCategoriesTable[0].id,
+          name: vehicleCategoriesTable[0].name
+        })
+      );
       done();
     });
   });

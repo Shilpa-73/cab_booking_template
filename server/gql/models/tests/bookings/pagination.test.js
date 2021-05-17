@@ -12,6 +12,14 @@ describe('Bookings graphQL-server-DB pagination tests', () => {
             vehicleId
             startTime
             endTime
+            drivers{
+              edges{
+                node{
+                  id
+                  firstName
+                }
+              }
+            }
         }
       }
       pageInfo {
@@ -27,6 +35,8 @@ describe('Bookings graphQL-server-DB pagination tests', () => {
   it('should have a query to get the bookings request!', async (done) => {
     await getResponse(bookingsQuery).then((response) => {
       const result = get(response, 'body.data.bookings.edges[0].node');
+
+      console.log(`single booking request is here!`, result);
       expect(result).toEqual(
         expect.objectContaining({
           id: bookingTable[0].id,

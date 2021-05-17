@@ -1,5 +1,6 @@
 import get from 'lodash/get';
 import { getResponse, mockDBClient, resetAndMockDB } from '@utils/testUtils';
+import { customersTable } from '@utils/testUtils/mockData';
 
 describe('Check IsLoggedin query tests', () => {
   const checkIsLoggedinQuery = `
@@ -18,7 +19,15 @@ describe('Check IsLoggedin query tests', () => {
 
     await getResponse(checkIsLoggedinQuery).then((response) => {
       expect(get(response, 'body.data.me')).toBeTruthy();
-      console.log(`loggedin response  is here!`, response);
+
+      const result = get(response, 'body.data.me');
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: Number(customersTable[0].id),
+          firstName: customersTable[0].firstName,
+          lastName: customersTable[0].lastName
+        })
+      );
       done();
     });
   });

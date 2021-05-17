@@ -10,7 +10,6 @@ describe('Get Past-Bookings record for logged-in customer!', () => {
               id
               createdAt
               updatedAt
-              vehicleNumber
               vehicleId
               startTime
               endTime
@@ -28,9 +27,10 @@ describe('Get Past-Bookings record for logged-in customer!', () => {
     jest.spyOn(dbClient.models.drivers, 'findAll').mockImplementation(() => [driversTable[0]]);
 
     await getResponse(pastBookingsQuery).then((response) => {
-      console.log(`response.body is here!`, response.body);
+      // console.log(`response.body is here!`, response.body.data.pastBookings.data);
 
       expect(get(response, 'body.data.pastBookings.data')).toBeTruthy();
+      // Todo to check Reference data & not working
       done();
     });
   });

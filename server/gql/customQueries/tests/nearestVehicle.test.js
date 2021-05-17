@@ -26,12 +26,9 @@ describe('Get Nearest Cabs available to book for logged-in customer!', () => {
     resetAndMockDB(null, {}, dbClient);
 
     await getResponse(nearestCabsQuery).then((response) => {
-      console.log(`response.body is here!`, response.body);
-
       expect(get(response, 'body.data.nearestCabs')).toBeTruthy();
-      const result = get(response, 'body.data.nearestCabs.data');
-
-      console.log(`nearest cabs response is here!`, result);
+      // const result = get(response, 'body.data.nearestCabs.data');
+      // Todo to check reference data & why not working!
       done();
     });
   });
