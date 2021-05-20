@@ -29,7 +29,28 @@ describe('Do Login for customer!', () => {
           userId: 1
         })
       );
-      // Todo to handle errors like "password mismatch!" OR "Email does not exist!"
+      done();
+    });
+  });
+
+  it('should request for login customer with Password mismatch!', async (done) => {
+    const dbClient = mockDBClient();
+    resetAndMockDB(null, {}, dbClient);
+
+    const loginMutationPasswordError = `
+      mutation {
+          login(email: "${credentials.email}", password: "123") {
+            userId
+            token
+          }
+      }
+  `;
+    await getResponse(loginMutationPasswordError).then((response) => {
+      try {
+        // Do nothing!
+      } catch (e) {
+        expect(e.message).toBe('Password Mismatch!');
+      }
       done();
     });
   });

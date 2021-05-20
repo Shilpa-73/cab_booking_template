@@ -1,4 +1,5 @@
 import isNil from 'lodash/isNil';
+import set from 'lodash/set';
 import {
   cabStationsTable,
   adminTable,
@@ -29,8 +30,8 @@ const defineAndAddAttributes = (connection, name, mock, attr, total = 10) => {
 
   mockTable.rawAttributes = attr;
   mockTable.manyFromSource = { count: () => new Promise((resolve) => resolve(total)) };
-  // set(mockTable, 'sequelize.dialect', 'postgres');
-  // set(mockTable, 'sequelize.QueryTypes', sequelize.QueryTypes);
+  set(mockTable, 'sequelize.dialect', 'postgres');
+  set(mockTable, 'sequelize.QueryTypes', sequelize.QueryTypes);
   // set(mockTable, 'sequelize.query', connection.query);
 
   // console.log(`mockTable.sequelize is here `, mockTable.sequelize, connection.sequelize)
