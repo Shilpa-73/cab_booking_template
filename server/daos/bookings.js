@@ -24,7 +24,6 @@ export const getPastBookingDetailsOfCustomer = async ({ customerId, startDate, e
     };
   }
 
-  console.log(`making where is for getting past is`, where);
   return transformDbArrayResponseToRawResponse(
     await db.bookings.findAll({
       where: {

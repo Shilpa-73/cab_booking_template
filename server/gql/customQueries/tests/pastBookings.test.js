@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import { getResponse, mockDBClient, resetAndMockDB } from '@utils/testUtils';
-import { driversTable, vehiclesTable } from '@utils/testUtils/mockData';
+import { driversTable, vehiclesTable, bookingTable } from '@utils/testUtils/mockData';
 
 describe('Get Past-Bookings record for logged-in customer!', () => {
   const pastBookingsQuery = `
@@ -27,10 +27,14 @@ describe('Get Past-Bookings record for logged-in customer!', () => {
     jest.spyOn(dbClient.models.drivers, 'findAll').mockImplementation(() => [driversTable[0]]);
 
     await getResponse(pastBookingsQuery).then((response) => {
-      // console.log(`response.body is here!`, response.body.data.pastBookings.data);
-
-      expect(get(response, 'body.data.pastBookings.data')).toBeTruthy();
-      // Todo to check Reference data & not working
+      expect(get(response, 'body.data.pastBookings')).toBeTruthy();
+      const result = get(response, 'body.data.pastBookings.data[0]');
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: bookingTable[0].id,
+          vehicleId: bookingTable[0].vehicleId
+        })
+      );
       done();
     });
   });

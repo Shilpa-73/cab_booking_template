@@ -1,5 +1,6 @@
 import get from 'lodash/get';
 import { getResponse, mockDBClient, resetAndMockDB } from '@utils/testUtils';
+import { vehicleCategoriesTable, vehiclesTable, vehicleSubCategoriesTable } from '@utils/testUtils/mockData';
 
 describe('Get Nearest Cabs available to book for logged-in customer!', () => {
   const coordinates = {
@@ -27,8 +28,16 @@ describe('Get Nearest Cabs available to book for logged-in customer!', () => {
 
     await getResponse(nearestCabsQuery).then((response) => {
       expect(get(response, 'body.data.nearestCabs')).toBeTruthy();
-      // const result = get(response, 'body.data.nearestCabs.data');
-      // Todo to check reference data & why not working!
+      const result = get(response, 'body.data.nearestCabs.data[0]');
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: vehiclesTable[0].id,
+          vehicleNumber: vehiclesTable[0].vehicleNumber,
+          category: vehicleCategoriesTable[0].name,
+          subCategory: vehicleSubCategoriesTable[0].name
+        })
+      );
       done();
     });
   });

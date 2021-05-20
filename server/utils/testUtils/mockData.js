@@ -127,6 +127,17 @@ export const passportTable = range(1, 10).map((value, index) => ({
   password: `$2a$10$DyYRW69h7MESQ4yNMHkHI.CcxNGxPajy8KAv6ZQSbwrMkrbwSnJTW`
 }));
 
+customerId = 1;
+driverId = 1;
+export const tokenTable = range(1, 20).map((value, index) => ({
+  id: (index + 1).toString(),
+  type: index >= 10 ? 'CUSTOMER' : 'DRIVER',
+  userId: index >= 10 ? customerId++ : driverId++,
+  token_expiry: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000),
+  login_time: new Date(),
+  logout_time: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
+}));
+
 const today = new Date();
 const endDate = new Date(new Date().setHours(new Date().getHours() + 2));
 export const bookingTable = range(1, 10).map((value, index) => ({

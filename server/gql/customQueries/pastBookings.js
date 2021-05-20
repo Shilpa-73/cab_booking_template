@@ -83,8 +83,6 @@ export const pastBookingQueries = {
         ...rest
       });
 
-      console.log(`allBookings is here!`, allBookings);
-
       return {
         data: allBookings
       };

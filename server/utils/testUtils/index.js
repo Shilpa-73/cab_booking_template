@@ -1,5 +1,4 @@
 import isNil from 'lodash/isNil';
-import set from 'lodash/set';
 import {
   cabStationsTable,
   adminTable,
@@ -11,7 +10,8 @@ import {
   passportTable,
   bookingTable,
   paymentTable,
-  addressTable
+  addressTable,
+  tokenTable
 } from '@server/utils/testUtils/mockData';
 import sequelize from 'sequelize';
 import request from 'supertest';
@@ -22,10 +22,20 @@ const defineAndAddAttributes = (connection, name, mock, attr, total = 10) => {
       findAll: () => [mock],
       findOne: () => mock
     }
+    // sequelize:{...connection}
   });
+
+  // console.log(`mockTable.sequelize query is`, mockTable.sequelize.QueryTypes.SELECT)
+
   mockTable.rawAttributes = attr;
   mockTable.manyFromSource = { count: () => new Promise((resolve) => resolve(total)) };
-  set(mockTable, 'sequelize.dialect', 'postgres');
+  // set(mockTable, 'sequelize.dialect', 'postgres');
+  // set(mockTable, 'sequelize.QueryTypes', sequelize.QueryTypes);
+  // set(mockTable, 'sequelize.query', connection.query);
+
+  // console.log(`mockTable.sequelize is here `, mockTable.sequelize, connection.sequelize)
+  console.log(`mockTable.sequelize1 is here `, connection.query);
+
   return mockTable;
 };
 export const getResponse = async (query, app) => {
@@ -112,6 +122,14 @@ export function mockDBClient(config = {}) {
     config.total
   );
 
+  const tokenMock = defineAndAddAttributes(
+    dbConnectionMock,
+    'tokens',
+    tokenTable[0],
+    require('@database/models/tokens').getAttributes(sequelize, sequelize.DataTypes),
+    config.total
+  );
+
   const bookingMock = defineAndAddAttributes(
     dbConnectionMock,
     'bookings',
@@ -148,6 +166,7 @@ export function mockDBClient(config = {}) {
       bookings: bookingMock,
       drivers: driversMock,
       passport: passportMock,
+      tokens: tokenMock,
       payments: paymentMock,
       address: addressMock
     }
